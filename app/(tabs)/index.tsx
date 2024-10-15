@@ -48,7 +48,7 @@ export default function HomeScreen() {
         <SafeAreaView style={tw`mt-4 flex-row justify-center w-[75%] mx-auto `}>
           <ThemedText style={tw`text-black mr-1`}>Não possui uma conta?</ThemedText>
           <Link href={'/(tabs)/register'} style={tw`text-base leading-normal`}>
-            <ThemedText  type="link" style={tw`text-lg`}>Cadastre-se!</ThemedText>
+            <ThemedText  type="link" style={tw`text-md`}>Cadastre-se!</ThemedText>
           </Link>
         </SafeAreaView>
       </ThemedView>
