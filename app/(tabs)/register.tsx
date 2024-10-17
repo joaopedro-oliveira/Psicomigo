@@ -11,9 +11,18 @@ import tw from "twrnc";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import CustomButton from "@/components/CustomButtton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { useState } from "react";
+import { Container, FormControl, Select, Text } from 'native-base';
 
-export default function Register() {
+
+const Register: React.FC<{ navigation: any }> = ({navigation}) => {
+
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [confirmarSenha, setconfirmarSenha] = useState('');
+
   return (
     <ThemedView style={tw`h-full w-full bg-white font-poppins`}>
       <ThemedView style={tw`m-auto bg-white px-2 w-full h-[90%] flex`}>
@@ -24,12 +33,14 @@ export default function Register() {
           />
         </View>
 
-        <SafeAreaView style={tw`flex justify-center w-[75%] mx-auto`}>
+        <FormControl style={tw`flex justify-center w-[75%] mx-auto`}>
           <ThemedText type="title" style={tw` mt-10 text-black`}>
             Crie sua conta
           </ThemedText>
           <ThemedText  style={tw`mt-8 ml-0.5 text-lg text-black `}>Nome</ThemedText>
             <TextInput
+              value={nome}
+              onChangeText={(nome) => setNome(nome)}
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa] hover:bg-neutral-600 placeholder:text-blue-300`}
               placeholder="Ex: john doe"
               //onChangeText={onChangeText}
@@ -37,6 +48,8 @@ export default function Register() {
             />
             <ThemedText  style={tw` mt-2 ml-0.5 text-lg text-black `}>Email </ThemedText>
             <TextInput
+              value={email}
+              onChangeText={(email) => setNome(email)}
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa] hover:bg-neutral-600 placeholder:text-[#888888]`}
               placeholder="Ex: john.doe@email.com"
               //onChangeText={onChangeText}
@@ -44,6 +57,8 @@ export default function Register() {
             />
             <ThemedText style={tw`mt-4 text-black `}>Senha</ThemedText>
             <TextInput
+              value={senha}
+              onChangeText={(senha) => setNome(senha)}
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa]`}
               //onChangeText={onChangeNumber}
               //value={number}
@@ -53,15 +68,15 @@ export default function Register() {
             <ThemedText style={tw`mt-4 text-black `}>Confirmar senha</ThemedText>
             <TextInput
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa]`}
-              //onChangeText={onChangeNumber}
-              //value={number}
+              value={confirmarSenha}
+              onChangeText={(confirmarSenha) => setNome(confirmarSenha)}
               placeholder="**********"
               keyboardType="default"
             />
-            <CustomButton onPress={() => {alert("123")}} title="Próximo"  style={tw`text- rounded-xl mt-7 w-full bg-[#4894FE] mx-auto`}></CustomButton>
+            <CustomButton onPress={() => {router.navigate('/(tabs)/secondStep')}} title="Próximo"  style={tw`text- rounded-xl mt-7 w-full bg-[#4894FE] mx-auto`}></CustomButton>
 
            
-        </SafeAreaView>
+        </FormControl>
         <SafeAreaView style={tw`mt-auto flex-row justify-center w-[75%] mx-auto `}>
               <ThemedText style={tw`text-black mr-1`}>Possui uma conta?</ThemedText>
               <Link asChild={true} href={'/(tabs)'} style={tw`text-base leading-normal`}>
@@ -117,3 +132,5 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 });
+
+export default Register
