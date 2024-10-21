@@ -49,7 +49,7 @@ const Register: React.FC<{ navigation: any }> = ({navigation}) => {
             <ThemedText  style={tw` mt-2 ml-0.5 text-lg text-black `}>Email </ThemedText>
             <TextInput
               value={email}
-              onChangeText={(email) => setNome(email)}
+              onChangeText={(email) => setEmail(email)}
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa] hover:bg-neutral-600 placeholder:text-[#888888]`}
               placeholder="Ex: john.doe@email.com"
               //onChangeText={onChangeText}
@@ -58,20 +58,22 @@ const Register: React.FC<{ navigation: any }> = ({navigation}) => {
             <ThemedText style={tw`mt-4 text-black `}>Senha</ThemedText>
             <TextInput
               value={senha}
-              onChangeText={(senha) => setNome(senha)}
+              onChangeText={(senha) => setSenha(senha)}
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa]`}
               //onChangeText={onChangeNumber}
               //value={number}
               placeholder="**********"
               keyboardType="default"
+              secureTextEntry={true}
             />
             <ThemedText style={tw`mt-4 text-black `}>Confirmar senha</ThemedText>
             <TextInput
               style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa]`}
               value={confirmarSenha}
-              onChangeText={(confirmarSenha) => setNome(confirmarSenha)}
+              onChangeText={(confirmarSenha) => setconfirmarSenha(confirmarSenha)}
               placeholder="**********"
               keyboardType="default"
+              secureTextEntry={true}
             />
             <CustomButton onPress={() => {router.navigate('/(tabs)/secondStep')}} title="Próximo"  style={tw`text- rounded-xl mt-7 w-full bg-[#4894FE] mx-auto`}></CustomButton>
 

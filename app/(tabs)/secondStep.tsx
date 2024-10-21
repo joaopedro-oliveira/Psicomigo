@@ -19,6 +19,7 @@ const SecondStep: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [crm, setCrm] = useState("");
   const [role, setRole] = useState("patient");
+  const [cpf, setCpf] = useState("");
 
   
   const styles = StyleSheet.create({
@@ -51,11 +52,7 @@ const SecondStep: React.FC<{ navigation: any }> = ({ navigation }) => {
       marginBottom: 10,
       paddingHorizontal: 10,
     },
-    buttonContainer: {
-      marginTop: 20,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    }
+
   });
   
 
@@ -89,7 +86,7 @@ const SecondStep: React.FC<{ navigation: any }> = ({ navigation }) => {
           </Select>
 
           <ThemedText style={tw` mt-2 ml-0.5 text-lg text-black `}>
-            CRM
+            CRM Doutor
           </ThemedText>
 
           <TextInput
@@ -101,6 +98,20 @@ const SecondStep: React.FC<{ navigation: any }> = ({ navigation }) => {
             //value={text}
           />
 
+          <ThemedText style={tw` mt-2 ml-0.5 text-lg text-black `}>
+            CRM
+          </ThemedText>
+
+           <TextInput
+            value={cpf}
+            onChangeText={(cpf) => setCpf(cpf)}
+            style={tw`w-full h-10 p-2.5 border mt-1 border-neutral-400 rounded bg-[#fafafa] hover:bg-neutral-600 placeholder:text-[#888888]`}
+            placeholder="123.456.789-10"
+            //onChangeText={onChangeText}
+            //value={text}
+          />
+
+
           {/* <CustomButton
             onPress={() => {
               router.navigate("/(tabs)/");
@@ -109,12 +120,13 @@ const SecondStep: React.FC<{ navigation: any }> = ({ navigation }) => {
             style={tw`text- rounded-xl mt-7 w-full bg-[#4894FE] mx-auto`}
           ></CustomButton> */}
           
-          <View style={styles.buttonContainer}>
-            <CustomButton style={tw`rounded-xl mt-7 bg-[#4894FE] mx-auto`} title="Previous" onPress={()=>router.navigate('/(tabs)/register')} />
-            <CustomButton style={tw`rounded-xl mt-7 bg-[#4894FE] mx-auto`} title="Next" onPress={()=>router.navigate('/(tabs)/')} />
-          </View>
 
         </FormControl>
+        <View style={tw`flex-row mt-auto w-[75%] mx-auto justify-center`}>
+            <CustomButton style={tw`rounded-xl mt-7 bg-[#4894FE] w-1/2 mx-auto mr-1`} title="Anterior" onPress={()=>router.navigate('/(tabs)/register')} />
+            <CustomButton style={tw`rounded-xl mt-7 bg-[#4894FE] w-1/2 mx-auto`} title="Cadastrar" onPress={()=>router.navigate('/(tabs)/')} />
+        </View>
+
         <SafeAreaView
           style={tw`mt-auto flex-row justify-center w-[75%] mx-auto `}
         >

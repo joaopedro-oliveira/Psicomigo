@@ -7,11 +7,17 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { NativeBaseProvider } from 'native-base';
+import { createUrqlClient } from '@/utils/createUrqlClient';
+import { Provider, ssrExchange } from 'urql';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+
+  const client = createUrqlClient({ssrExchange:false}, RootLayout);
+
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -28,6 +34,7 @@ export default function RootLayout() {
   }
 
   return (
+    // <Provider  value={client}>
     <NativeBaseProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
@@ -36,5 +43,6 @@ export default function RootLayout() {
       </Stack>
     </ThemeProvider>
     </NativeBaseProvider>
+    //  </Provider>
   );
 }
