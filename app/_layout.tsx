@@ -8,7 +8,8 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { NativeBaseProvider } from 'native-base';
 import { createUrqlClient } from '@/utils/createUrqlClient';
-import { Provider, ssrExchange } from 'urql';
+import { debugExchange, Provider, ssrExchange } from 'urql';
+import { createClient } from 'urql';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -16,7 +17,11 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
 
 
-  const client = createUrqlClient({ssrExchange:false}, RootLayout);
+  //const client = createUrqlClient({ssrExchange:true});
+
+  const client = createClient({
+    url: "http://localhost:4000/graphql",
+  })
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -34,8 +39,9 @@ export default function RootLayout() {
   }
 
   return (
-    // <Provider  value={client}>
+    <Provider value={client}>
     <NativeBaseProvider>
+
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -43,6 +49,6 @@ export default function RootLayout() {
       </Stack>
     </ThemeProvider>
     </NativeBaseProvider>
-    //  </Provider>
+    </Provider>
   );
 }

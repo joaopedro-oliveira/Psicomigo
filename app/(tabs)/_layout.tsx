@@ -5,11 +5,14 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { NativeBaseProvider } from 'native-base';
+import { createUrqlClient } from '@/utils/createUrqlClient';
+import { Provider } from 'urql';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+
     <NativeBaseProvider>
     <Tabs
       screenOptions={{

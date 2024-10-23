@@ -12,10 +12,11 @@ export const useIsAuth = () => {
     console.log(data)
     const router = useRouter()
     const pathname = usePathname()
+    const redirectUrl = "login?next=" + pathname
 
     useEffect(() => {
         if (!fetching && !data?.me) {
-            router.replace("/login" );
+            router.replace({pathname:`./${redirectUrl}`});
         }
     }, [fetching, data, router]);
 }
