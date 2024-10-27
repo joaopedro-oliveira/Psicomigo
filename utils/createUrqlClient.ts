@@ -1,7 +1,7 @@
 import { cacheExchange, Resolver, Cache } from "@urql/exchange-graphcache";
 import {router} from "expo-router";
 import {
-  dedupExchange,
+  // dedupExchange,
   Exchange,
   fetchExchange,
   stringifyVariables,
@@ -24,6 +24,7 @@ import { isServer } from "./isServer";
 //import { SubscriptionClient } from "subscriptions-transport-ws";
 //import { devtoolsExchange } from "@urql/devtools";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const wsClient = process.browser ? createWSClient({
 //   url: 'ws://localhost:4000/graphql',
@@ -40,6 +41,14 @@ const invalidateProfilePosts = (cache: Cache) => {
     profile: false,
   });
 };
+
+
+  async function getCookie () {
+    const cookie = await AsyncStorage.getItem('cookie');
+    return cookie;
+  };
+    
+
 
 const invalidatePosts = (cache: Cache) => {
   const allFields = cache.inspectFields("Query");
@@ -70,18 +79,18 @@ const invalidateMessages = (cache: Cache) => {
 //     })
 //   : null;
 
-export const errorEnchange: Exchange =
-  ({ forward }) =>
-  (ops$) => {
-    return pipe(
-      forward(ops$),
-      tap(({ error }) => {
-        if (error?.message.includes("Not authenticated")) {
-          router.replace("/login");
-        }
-      })
-    );
-  };
+// export const errorEnchange: Exchange =
+//   ({ forward }) =>
+//   (ops$) => {
+//     return pipe(
+//       forward(ops$),
+//       tap(({ error }) => {
+//         if (error?.message.includes("Not authenticated")) {
+//           router.replace("/login");
+//         }
+//       })
+//     );
+//   };
 
 const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
@@ -159,13 +168,18 @@ const messagesScrolling = (): Resolver => {
 };
 
 export const createUrqlClient: any = (ssrExchange: any, ctx: any) => {
-  let cookie = "";
+  let cookie;
+
+  // if (isServer()) {
+  //   cookie = ctx?.req?.headers?.cookie;
+  // }
 
   if (isServer()) {
-    cookie = ctx?.req?.headers?.cookie;
+    cookie = getCookie();
   }
 
   return {
+    
     url: "http://localhost:4000/graphql",
     fetchOptions: {
       credentials: "include" as const,
@@ -176,114 +190,114 @@ export const createUrqlClient: any = (ssrExchange: any, ctx: any) => {
         : undefined,
     },
     exchanges: [
-      dedupExchange,
-      // cacheExchange({
-      //   keys: {
-      //     PaginatedPosts: () => null,
-      //   },
-      //   resolvers: {
-      //     Query: {
-      //       // posts: cursorPagination(),
-      //       // messages: messagesScrolling(),
-      //     },
-      //   },
-      //   updates: {
-      //     Mutation: {
-      //       // addProfilePicture: (_result, args, cache, info) => {
-      //       //   cache.invalidate({
-      //       //     __typename: "getUser",
-      //       //     userId: (args as AddProfilePictureMutationVariables).userId,
-      //       //   });
-      //       // },
+      // dedupExchange,
+      cacheExchange({
+        keys: {
+          PaginatedPosts: () => null,
+        },
+        resolvers: {
+          Query: {
+            // posts: cursorPagination(),
+            // messages: messagesScrolling(),
+          },
+        },
+        updates: {
+          Mutation: {
+            // addProfilePicture: (_result, args, cache, info) => {
+            //   cache.invalidate({
+            //     __typename: "getUser",
+            //     userId: (args as AddProfilePictureMutationVariables).userId,
+            //   });
+            // },
 
-      //       // deletePost: (_result, args, cache, info) => {
-      //       //   cache.invalidate({
-      //       //     __typename: "Post",
-      //       //     id: (args as DeletePostMutationVariables).id,
-      //       //   });
-      //       // },
-      //       // vote: (_result, args, cache, info) => {
-      //       //   const { postId, value } = args as VoteMutationVariables;
-      //       //   const data = cache.readFragment(
-      //       //     gql`
-      //       //       fragment _ on Post {
-      //       //         id
-      //       //         points
-      //       //         voteStatus
-      //       //       }
-      //       //     `,
-      //       //     { id: postId }
-      //       //   );
-      //       //   if (data) {
-      //       //     if (data.voteStatus === value) {
-      //       //       return;
-      //       //     }
-      //       //     const newPoints =
-      //       //       (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
-      //       //     cache.writeFragment(
-      //       //       gql`
-      //       //         fragment _ on Post {
-      //       //           points
-      //       //           voteStatus
-      //       //         }
-      //       //       `,
-      //       //       { id: postId, points: newPoints, voteStatus: value }
-      //       //     );
-      //       //   }
-      //       // },
+            // deletePost: (_result, args, cache, info) => {
+            //   cache.invalidate({
+            //     __typename: "Post",
+            //     id: (args as DeletePostMutationVariables).id,
+            //   });
+            // },
+            // vote: (_result, args, cache, info) => {
+            //   const { postId, value } = args as VoteMutationVariables;
+            //   const data = cache.readFragment(
+            //     gql`
+            //       fragment _ on Post {
+            //         id
+            //         points
+            //         voteStatus
+            //       }
+            //     `,
+            //     { id: postId }
+            //   );
+            //   if (data) {
+            //     if (data.voteStatus === value) {
+            //       return;
+            //     }
+            //     const newPoints =
+            //       (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
+            //     cache.writeFragment(
+            //       gql`
+            //         fragment _ on Post {
+            //           points
+            //           voteStatus
+            //         }
+            //       `,
+            //       { id: postId, points: newPoints, voteStatus: value }
+            //     );
+            //   }
+            // },
 
-      //       // createPost: (_result, args, cache, info) => {
-      //       //   invalidatePosts(cache);
-      //       // },
+            // createPost: (_result, args, cache, info) => {
+            //   invalidatePosts(cache);
+            // },
 
-      //       // createMessage: (_result, args, cache, info) => {
-      //       //   invalidateMessages(cache);
-      //       // },
+            // createMessage: (_result, args, cache, info) => {
+            //   invalidateMessages(cache);
+            // },
 
-      //       logout: (_result, args, cache, info) => {
-      //         betterUpdateQuery<LogoutMutation, MeQuery>(
-      //           cache,
-      //           { query: MeDocument },
-      //           _result,
-      //           () => ({ me: null })
-      //         );
-      //       },
-      //       login: (_result, args, cache, info) => {
-      //         betterUpdateQuery<LoginMutation, MeQuery>(
-      //           cache,
-      //           { query: MeDocument },
-      //           _result,
-      //           (result, query) => {
-      //             if (result.login.errors) {
-      //               return query;
-      //             } else {
-      //               return {
-      //                 me: result.login.user,
-      //               };
-      //             }
-      //           }
-      //         );
-      //       },
-      //       register: (_result, args, cache, info) => {
-      //         betterUpdateQuery<RegisterMutation, MeQuery>(
-      //           cache,
-      //           { query: MeDocument },
-      //           _result,
-      //           (result, query) => {
-      //             if (result.register.errors) {
-      //               return query;
-      //             } else {
-      //               return {
-      //                 me: result.register.user,
-      //               };
-      //             }
-      //           }
-      //         );
-      //       },
-      //     },
-      //   },
-      // }),
-      errorEnchange,
+            logout: (_result, args, cache, info) => {
+              betterUpdateQuery<LogoutMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                () => ({ me: null })
+              );
+            },
+            login: (_result, args, cache, info) => {
+              betterUpdateQuery<LoginMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.login.errors) {
+                    return query;
+                  } else {
+                    return {
+                      me: result.login.user,
+                    };
+                  }
+                }
+              );
+            },
+            register: (_result, args, cache, info) => {
+              betterUpdateQuery<RegisterMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.register.errors) {
+                    return query;
+                  } else {
+                    return {
+                      me: result.register.user,
+                    };
+                  }
+                }
+              );
+            },
+          },
+        },
+      }),
+      // errorEnchange,
       ssrExchange
 
       // multipartFetchExchange,

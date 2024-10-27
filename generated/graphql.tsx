@@ -5,162 +5,172 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
-  Upload: { input: any; output: any; }
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  DateTime: any;
+  Upload: any;
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
-  field: Scalars['String']['output'];
-  message: Scalars['String']['output'];
+  field: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type FollowResponse = {
   __typename?: 'FollowResponse';
-  errors?: Maybe<Scalars['String']['output']>;
-  noErrors: Scalars['Boolean']['output'];
+  errors?: Maybe<Scalars['String']>;
+  noErrors: Scalars['Boolean'];
 };
 
 export type Message = {
   __typename?: 'Message';
-  content: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
+  content: Scalars['String'];
+  createdAt: Scalars['String'];
   creator: User;
-  creatorId: Scalars['Float']['output'];
-  id: Scalars['Int']['output'];
-  updatedAt: Scalars['String']['output'];
+  creatorId: Scalars['Float'];
+  id: Scalars['Int'];
+  updatedAt: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   addFollowing: FollowResponse;
-  addProfilePicture: Scalars['Boolean']['output'];
+  addProfilePicture: Scalars['Boolean'];
   changePassword: UserResponse;
   createMessage: Message;
   createPost: Post;
-  deleteMessage: Scalars['Boolean']['output'];
-  deletePost: Scalars['Boolean']['output'];
-  forgotPassword: Scalars['Boolean']['output'];
+  deleteMessage: Scalars['Boolean'];
+  deletePost: Scalars['Boolean'];
+  forgotPassword: Scalars['Boolean'];
   login: UserResponse;
-  logout: Scalars['Boolean']['output'];
+  logout: Scalars['Boolean'];
   register: UserResponse;
   updatePost?: Maybe<Post>;
-  uploadImageInPost: Scalars['Boolean']['output'];
-  vote: Scalars['Boolean']['output'];
+  uploadImageInPost: Scalars['Boolean'];
+  vote: Scalars['Boolean'];
 };
 
 
 export type MutationAddFollowingArgs = {
-  userId: Scalars['Float']['input'];
+  userId: Scalars['Float'];
 };
 
 
 export type MutationAddProfilePictureArgs = {
-  picture: Scalars['Upload']['input'];
-  userId: Scalars['Int']['input'];
+  picture: Scalars['Upload'];
+  userId: Scalars['Int'];
 };
 
 
 export type MutationChangePasswordArgs = {
-  newPassword: Scalars['String']['input'];
-  token: Scalars['String']['input'];
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
 export type MutationCreateMessageArgs = {
-  content: Scalars['String']['input'];
+  content: Scalars['String'];
 };
 
 
 export type MutationCreatePostArgs = {
   input: PostInput;
-  picture?: InputMaybe<Scalars['Upload']['input']>;
+  picture?: InputMaybe<Scalars['Upload']>;
 };
 
 
 export type MutationDeleteMessageArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['Int'];
 };
 
 
 export type MutationDeletePostArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['Int'];
 };
 
 
 export type MutationForgotPasswordArgs = {
-  email: Scalars['String']['input'];
+  email: Scalars['String'];
 };
 
 
 export type MutationLoginArgs = {
-  password: Scalars['String']['input'];
-  usernameOrEmail: Scalars['String']['input'];
+  password: Scalars['String'];
+  usernameOrEmail: Scalars['String'];
 };
 
 
 export type MutationRegisterArgs = {
-  options: UsernamePasswordInput;
+  options: Opcoes;
 };
 
 
 export type MutationUpdatePostArgs = {
-  id: Scalars['Int']['input'];
-  text: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  id: Scalars['Int'];
+  text: Scalars['String'];
+  title: Scalars['String'];
 };
 
 
 export type MutationVoteArgs = {
-  postId: Scalars['Int']['input'];
-  value: Scalars['Int']['input'];
+  postId: Scalars['Int'];
+  value: Scalars['Int'];
+};
+
+export type Opcoes = {
+  confirmarSenha: Scalars['String'];
+  cpf: Scalars['String'];
+  crm: Scalars['String'];
+  dataNascimento: Scalars['DateTime'];
+  email: Scalars['String'];
+  genero: Scalars['String'];
+  password: Scalars['String'];
+  tipo: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
-  hasMore: Scalars['Boolean']['output'];
+  hasMore: Scalars['Boolean'];
   posts: Array<Post>;
 };
 
 export type Post = {
   __typename?: 'Post';
-  classification?: Maybe<Scalars['String']['output']>;
-  createdAt: Scalars['String']['output'];
+  classification?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
   creator: User;
-  creatorId: Scalars['Float']['output'];
-  id: Scalars['Int']['output'];
-  images?: Maybe<Scalars['String']['output']>;
-  points: Scalars['Float']['output'];
-  text: Scalars['String']['output'];
-  textSnippet: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
-  voteStatus?: Maybe<Scalars['Int']['output']>;
+  creatorId: Scalars['Float'];
+  id: Scalars['Int'];
+  images?: Maybe<Scalars['String']>;
+  points: Scalars['Float'];
+  text: Scalars['String'];
+  textSnippet: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  voteStatus?: Maybe<Scalars['Int']>;
 };
 
 export type PostInput = {
-  text: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  text: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  followers?: Maybe<Array<User>>;
-  following?: Maybe<Array<User>>;
-  hello: Scalars['String']['output'];
+  hello: Scalars['String'];
   me?: Maybe<User>;
+  medico?: Maybe<Array<User>>;
   message?: Maybe<Message>;
   messages: ScrollingMessage;
+  pacientes?: Maybe<Array<User>>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
   profilePosts: PaginatedPosts;
@@ -171,47 +181,47 @@ export type Query = {
 
 
 export type QueryMessageArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['Int'];
 };
 
 
 export type QueryMessagesArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  limit: Scalars['Int']['input'];
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 
 export type QueryPostArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['Int'];
 };
 
 
 export type QueryPostsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  limit: Scalars['Int']['input'];
-  profile?: InputMaybe<Scalars['Boolean']['input']>;
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  profile?: InputMaybe<Scalars['Boolean']>;
 };
 
 
 export type QueryProfilePostsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  limit: Scalars['Int']['input'];
-  username: Scalars['String']['input'];
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  username: Scalars['String'];
 };
 
 
 export type QuerySearchUserArgs = {
-  searchString: Scalars['String']['input'];
+  searchString: Scalars['String'];
 };
 
 
 export type QueryUserArgs = {
-  userId: Scalars['String']['input'];
+  userId: Scalars['String'];
 };
 
 export type ScrollingMessage = {
   __typename?: 'ScrollingMessage';
-  hasMore: Scalars['Boolean']['output'];
+  hasMore: Scalars['Boolean'];
   messages: Array<Message>;
 };
 
@@ -222,16 +232,19 @@ export type Subscription = {
 
 export type User = {
   __typename?: 'User';
-  createdAt: Scalars['DateTime']['output'];
-  email: Scalars['String']['output'];
-  followerCount: Scalars['Int']['output'];
-  followers: Array<User>;
-  following: Array<User>;
-  id: Scalars['Int']['output'];
-  messages: Message;
-  profilePicture: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  username: Scalars['String']['output'];
+  cpf: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  crm: Scalars['String'];
+  dataNascimento: Scalars['DateTime'];
+  email: Scalars['String'];
+  genero: Scalars['String'];
+  id: Scalars['Int'];
+  medico: Array<User>;
+  paciente: Array<User>;
+  profilePicture: Scalars['String'];
+  tipo: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  username: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -240,40 +253,34 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
-export type UsernamePasswordInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-};
-
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type RegularUserFragment = { __typename?: 'User', id: number, username: string, profilePicture: string };
 
-export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null };
+export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined };
 
 export type ChangePasswordMutationVariables = Exact<{
-  token: Scalars['String']['input'];
-  newPassword: Scalars['String']['input'];
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined } };
 
 export type ForgotPasswordMutationVariables = Exact<{
-  email: Scalars['String']['input'];
+  email: Scalars['String'];
 }>;
 
 
 export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: boolean };
 
 export type LoginMutationVariables = Exact<{
-  usernameOrEmail: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  usernameOrEmail: Scalars['String'];
+  password: Scalars['String'];
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -281,23 +288,23 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type RegisterMutationVariables = Exact<{
-  options: UsernamePasswordInput;
+  options: Opcoes;
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined };
 
 export type GetUserQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
+  userId: Scalars['String'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: number, username: string, email: string, createdAt: any, profilePicture: string } | null };
+export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: number, username: string, email: string, createdAt: any, profilePicture: string } | null | undefined };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -364,7 +371,7 @@ export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
 export const RegisterDocument = gql`
-    mutation Register($options: UsernamePasswordInput!) {
+    mutation Register($options: Opcoes!) {
   register(options: $options) {
     ...RegularUserResponse
   }
