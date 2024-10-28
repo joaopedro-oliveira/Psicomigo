@@ -12,34 +12,44 @@ const HomeScreen = () => {
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   });
+
   return (
     <ThemedView style={tw`h-full w-full bg-white `}>
       <ThemedView
         style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center `}
       >
-        {!data?.me ? (
-          <ThemedText
-            type="subtitle"
-            style={tw`text-black ml-7 mr-auto text-2xl`}
-          >
-            Login
-          </ThemedText>
-        ) : (
-          <ThemedText
-            type="subtitle"
-            style={tw`text-black ml-7 mr-auto text-xl`}
-          >
+        <>
+          {fetching ? (
             <ThemedText
-              type="defaultSemiBold"
-              style={tw` text-lg text-gray-400`}
+              type="subtitle"
+              style={tw`text-black ml-7 mr-auto text-2xl`}
             >
-              {"Olá, \n"}
+              Loading
             </ThemedText>
-            {data.me.username.charAt(0).toUpperCase() +
-              data.me.username.slice(1).toLowerCase() +
-              "!"}
-          </ThemedText>
-        )}
+          ) : !data?.me ? (
+            <ThemedText
+              type="subtitle"
+              style={tw`text-black ml-7 mr-auto text-2xl`}
+            >
+              No User
+            </ThemedText>
+          ) : (
+            <ThemedText
+              type="subtitle"
+              style={tw`text-black ml-7 mr-auto text-xl`}
+            >
+              <ThemedText
+                type="defaultSemiBold"
+                style={tw` text-lg text-gray-400`}
+              >
+                {"Olá, \n"}
+              </ThemedText>
+              {data.me.username.charAt(0).toUpperCase() +
+                data.me.username.slice(1).toLowerCase() +
+                "!"}
+            </ThemedText>
+          )}
+        </>
 
         <Image
           source={require("@/assets/images/AppIcon.png")}

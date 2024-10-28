@@ -6,10 +6,11 @@ import {
   RegisterMutation,
 } from "@/generated/graphql";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createClient, fetchExchange } from "urql";
+import { createClient, fetchExchange, subscriptionExchange } from "urql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import { cacheExchange } from "@urql/exchange-graphcache";
-
+import { Client, createClient as createSubClient } from "graphql-ws";
+import { Platform } from "react-native";
 const isServer = () => typeof window === "undefined";
 let cookie: any;
 
@@ -19,13 +20,22 @@ async function getCookie() {
 }
 
 const GetCookie: any = () => {
-  if (isServer()) {
-    cookie = getCookie();
-  }
+  // if (isServer()) {
+  cookie = getCookie();
+  console.log("cookie" + getCookie());
+  // }
 };
 
+const subscriptionClient: Client = createSubClient({
+  url: "ws://192.168.0.252:4000/graphql",
+});
+
 export const client = createClient({
-  url: "http://192.168.0.252:4000/graphql",
+  // url: "http://localhost:4000/graphql",
+  url:
+    Platform.OS === "web"
+      ? "http://localhost:4000/graphql"
+      : "http://192.168.0.252:4000/graphql",
   fetchOptions: {
     credentials: "include" as const,
     headers: cookie
@@ -57,6 +67,7 @@ export const client = createClient({
             );
           },
           login: (_result, args, cache, info) => {
+            console.log("chache exchanged?");
             betterUpdateQuery<LoginMutation, MeQuery>(
               cache,
               { query: MeDocument },
@@ -90,6 +101,27 @@ export const client = createClient({
           },
         },
       },
+    }),
+
+    subscriptionExchange({
+      forwardSubscription: (operation) => ({
+        subscribe: (sink) => {
+          const { query, variables } = operation;
+          const unsubscribe = subscriptionClient.subscribe(
+            {
+              // id: key.toString(), // Optional, but helpful for tracking
+              query: query as string, // Ensure query is a string
+              variables: variables as Record<string, any> | undefined,
+            },
+            {
+              next: sink.next.bind(sink),
+              error: sink.error.bind(sink),
+              complete: sink.complete.bind(sink),
+            }
+          );
+          return { unsubscribe };
+        },
+      }),
     }),
   ],
 });

@@ -1,0 +1,19 @@
+subscription enviaQuestionarios {
+  enviaQuestionario {
+    id
+    usuarioId
+    pergunta {
+      id
+      pergunta
+      tipo
+      topico
+      opcoes_respostas {
+        id
+        text
+      }
+    }
+    respondido
+    dataReposta
+    peso
+  }
+}

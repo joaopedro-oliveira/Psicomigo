@@ -29,32 +29,16 @@ export type FollowResponse = {
   noErrors: Scalars['Boolean'];
 };
 
-export type Message = {
-  __typename?: 'Message';
-  content: Scalars['String'];
-  createdAt: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['Float'];
-  id: Scalars['Int'];
-  updatedAt: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   addFollowing: FollowResponse;
   addProfilePicture: Scalars['Boolean'];
   changePassword: UserResponse;
-  createMessage: Message;
-  createPost: Post;
-  deleteMessage: Scalars['Boolean'];
-  deletePost: Scalars['Boolean'];
+  criarQuestionario: Array<Questionario>;
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
-  updatePost?: Maybe<Post>;
-  uploadImageInPost: Scalars['Boolean'];
-  vote: Scalars['Boolean'];
 };
 
 
@@ -75,27 +59,6 @@ export type MutationChangePasswordArgs = {
 };
 
 
-export type MutationCreateMessageArgs = {
-  content: Scalars['String'];
-};
-
-
-export type MutationCreatePostArgs = {
-  input: PostInput;
-  picture?: InputMaybe<Scalars['Upload']>;
-};
-
-
-export type MutationDeleteMessageArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type MutationDeletePostArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
 };
@@ -111,19 +74,6 @@ export type MutationRegisterArgs = {
   options: Opcoes;
 };
 
-
-export type MutationUpdatePostArgs = {
-  id: Scalars['Int'];
-  text: Scalars['String'];
-  title: Scalars['String'];
-};
-
-
-export type MutationVoteArgs = {
-  postId: Scalars['Int'];
-  value: Scalars['Int'];
-};
-
 export type Opcoes = {
   confirmarSenha: Scalars['String'];
   cpf: Scalars['String'];
@@ -136,77 +86,48 @@ export type Opcoes = {
   username: Scalars['String'];
 };
 
-export type PaginatedPosts = {
-  __typename?: 'PaginatedPosts';
-  hasMore: Scalars['Boolean'];
-  posts: Array<Post>;
-};
-
-export type Post = {
-  __typename?: 'Post';
-  classification?: Maybe<Scalars['String']>;
+export type OpcoesResposta = {
+  __typename?: 'OpcoesResposta';
   createdAt: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['Float'];
   id: Scalars['Int'];
-  images?: Maybe<Scalars['String']>;
-  points: Scalars['Float'];
+  pergunta: Pergunta;
   text: Scalars['String'];
-  textSnippet: Scalars['String'];
-  title: Scalars['String'];
   updatedAt: Scalars['String'];
-  voteStatus?: Maybe<Scalars['Int']>;
 };
 
-export type PostInput = {
-  text: Scalars['String'];
-  title: Scalars['String'];
+export type Pergunta = {
+  __typename?: 'Pergunta';
+  createdAt: Scalars['String'];
+  id: Scalars['Int'];
+  opcoes_respostas?: Maybe<Array<OpcoesResposta>>;
+  pergunta: Scalars['String'];
+  perguntaAtiva: Scalars['Boolean'];
+  questionario?: Maybe<Questionario>;
+  resposta: Resposta;
+  tipo: Scalars['String'];
+  topico: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
+  helloOpR: Scalars['String'];
+  helloPergunta: Scalars['String'];
+  helloQuesitonario: Scalars['String'];
+  helloResposta: Scalars['String'];
   me?: Maybe<User>;
   medico?: Maybe<Array<User>>;
-  message?: Maybe<Message>;
-  messages: ScrollingMessage;
   pacientes?: Maybe<Array<User>>;
-  post?: Maybe<Post>;
-  posts: PaginatedPosts;
-  profilePosts: PaginatedPosts;
+  pacientesDoutor?: Maybe<Array<User>>;
+  perguntas?: Maybe<Array<Pergunta>>;
+  questionarios: Array<Questionario>;
   searchUser?: Maybe<Array<User>>;
-  trends: Array<Post>;
   user?: Maybe<User>;
 };
 
 
-export type QueryMessageArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryMessagesArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
-
-
-export type QueryPostArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryPostsArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
-  limit: Scalars['Int'];
-  profile?: InputMaybe<Scalars['Boolean']>;
-};
-
-
-export type QueryProfilePostsArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
-  limit: Scalars['Int'];
-  username: Scalars['String'];
+export type QueryPerguntasArgs = {
+  topicos?: InputMaybe<Array<Scalars['String']>>;
 };
 
 
@@ -219,15 +140,33 @@ export type QueryUserArgs = {
   userId: Scalars['String'];
 };
 
-export type ScrollingMessage = {
-  __typename?: 'ScrollingMessage';
-  hasMore: Scalars['Boolean'];
-  messages: Array<Message>;
+export type Questionario = {
+  __typename?: 'Questionario';
+  createdAt: Scalars['String'];
+  dataReposta?: Maybe<Scalars['DateTime']>;
+  id: Scalars['Int'];
+  pergunta?: Maybe<Array<Pergunta>>;
+  peso: Scalars['Float'];
+  respondido: Scalars['Boolean'];
+  resposta?: Maybe<Array<Resposta>>;
+  updatedAt: Scalars['String'];
+  usuarioId: Scalars['Int'];
+};
+
+export type Resposta = {
+  __typename?: 'Resposta';
+  createdAt: Scalars['String'];
+  id: Scalars['Int'];
+  opcao_resposta_id: Scalars['Float'];
+  pergunta: Pergunta;
+  questionario: Questionario;
+  resposta_livre: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  newMessage: Message;
+  enviaQuestionario: Questionario;
 };
 
 export type User = {
@@ -239,10 +178,12 @@ export type User = {
   email: Scalars['String'];
   genero: Scalars['String'];
   id: Scalars['Int'];
-  medico: Array<User>;
-  paciente: Array<User>;
+  medico?: Maybe<User>;
+  paciente_ativo: Scalars['Boolean'];
+  pacientes: Array<User>;
   profilePicture: Scalars['String'];
   tipo: Scalars['String'];
+  topicosPaciente: Array<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
 };
@@ -305,6 +246,11 @@ export type GetUserQueryVariables = Exact<{
 
 
 export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: number, username: string, email: string, createdAt: any, profilePicture: string } | null | undefined };
+
+export type EnviaQuestionariosSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, peso: number, pergunta?: Array<{ __typename?: 'Pergunta', id: number, pergunta: string, tipo: string, topico: string, opcoes_respostas?: Array<{ __typename?: 'OpcoesResposta', id: number, text: string }> | null | undefined }> | null | undefined } };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -406,4 +352,29 @@ export const GetUserDocument = gql`
 
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
+};
+export const EnviaQuestionariosDocument = gql`
+    subscription enviaQuestionarios {
+  enviaQuestionario {
+    id
+    usuarioId
+    pergunta {
+      id
+      pergunta
+      tipo
+      topico
+      opcoes_respostas {
+        id
+        text
+      }
+    }
+    respondido
+    dataReposta
+    peso
+  }
+}
+    `;
+
+export function useEnviaQuestionariosSubscription<TData = EnviaQuestionariosSubscription>(options: Omit<Urql.UseSubscriptionArgs<EnviaQuestionariosSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<EnviaQuestionariosSubscription, TData>) {
+  return Urql.useSubscription<EnviaQuestionariosSubscription, TData, EnviaQuestionariosSubscriptionVariables>({ query: EnviaQuestionariosDocument, ...options }, handler);
 };

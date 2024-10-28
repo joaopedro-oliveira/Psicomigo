@@ -13,6 +13,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { NativeBaseProvider } from "native-base";
 import { Provider } from "urql";
 import { client } from "@/utils/createUrlClientExpo";
+import NotificationListener from "./notificationListener";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,6 +46,7 @@ export default function RootLayout() {
             <Stack.Screen name="(register)" options={{ headerShown: false }} />
           </Stack>
         </ThemeProvider>
+        <NotificationListener />
       </NativeBaseProvider>
     </Provider>
   );
