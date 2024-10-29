@@ -6,9 +6,12 @@ import Constants from "expo-constants";
 import {
   useEnviaQuestionariosSubscription,
   useMeQuery,
+  useGetPushTokenQuery,
   useSavePushTokenMutation,
-} from "@/generated/graphql";
+} from "@/generated/graphql"; // Assuming these hooks are generated correctly
+import getDeviceID from "@/utils/getDeviceID";
 
+// Set notification handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -17,7 +20,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function App() {
+export default function NotificationListener() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
     []
@@ -27,10 +30,10 @@ export default function App() {
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
-
   const [{ data }] = useEnviaQuestionariosSubscription();
-  const [, savePushToken] = useSavePushTokenMutation();
   const [{ data: meData }] = useMeQuery();
+  const [, savePushToken] = useSavePushTokenMutation();
+
   useEffect(() => {
     if (data?.enviaQuestionario) {
       if (!meData?.me) return;
@@ -49,15 +52,24 @@ export default function App() {
   }, [data]);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(
-      (token) => token && setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then(async (token) => {
+      if (token) {
+        setExpoPushToken(token.toString());
+        console.log(token.toString());
+        const deviceId = await getDeviceID();
+        savePushToken({ deviceId, token: token.toString() });
+
+        // Fetch the push token based on the device ID
+        fetchPushToken(deviceId);
+      }
+    });
 
     if (Platform.OS === "android") {
       Notifications.getNotificationChannelsAsync().then((value) =>
         setChannels(value ?? [])
       );
     }
+
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
@@ -78,19 +90,21 @@ export default function App() {
     };
   }, []);
 
+  // Function to fetch the push token using the device ID
+  const fetchPushToken = async (deviceId: string) => {
+    const [{ data: tokenData }] = await useGetPushTokenQuery({
+      variables: { deviceId },
+    });
+
+    if (tokenData?.getPushToken?.token) {
+      const token = tokenData.getPushToken.token; // Adjust this according to your GraphQL response structure
+      console.log(token);
+      setExpoPushToken(token);
+    }
+  };
+
   return null;
 }
-
-// async function schedulePushNotification() {
-//   await Notifications.scheduleNotificationAsync({
-//     content: {
-//       title: "You've got mail! 📬",
-//       body: 'Here is the notification body',
-//       data: { data: 'goes here', test: { test1: 'more data' } },
-//     },
-//     trigger: { seconds: 2 },
-//   });
-// }
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -108,29 +122,20 @@ async function registerForPushNotificationsAsync() {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
+
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+
     if (finalStatus !== "granted") {
       alert("Failed to get push token for push notification!");
       return;
     }
-    // Learn more about projectId:
-    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-    // EAS projectId is used here.
+
+    // Get the push token directly here instead of using a hook
     try {
-      const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ??
-        Constants?.easConfig?.projectId;
-      if (!projectId) {
-        throw new Error("Project ID not found");
-      }
-      token = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
+      token = await Notifications.getExpoPushTokenAsync();
       console.log(token);
     } catch (e) {
       token = `${e}`;

@@ -1,0 +1,5 @@
+query getPushToken($deviceId: String!) {
+  getPushToken(deviceId: $deviceId) {
+    token
+  }
+}

@@ -1,0 +1,3 @@
+mutation savePushToken($deviceId: String!, $token: String!) {
+  savePushToken(deviceId: $deviceId, token: $token)
+}

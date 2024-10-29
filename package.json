@@ -32,6 +32,7 @@
     "expo-linking": "~6.3.1",
     "expo-notifications": "~0.28.19",
     "expo-router": "~3.5.23",
+    "expo-secure-store": "^13.0.2",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
@@ -54,6 +55,7 @@
     "react-native-web": "~0.19.10",
     "twrnc": "^4.5.1",
     "urql": "^4.2.0",
+    "uuid": "^11.0.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {

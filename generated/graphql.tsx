@@ -39,6 +39,7 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
+  savePushToken: Scalars['Boolean'];
 };
 
 
@@ -72,6 +73,12 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   options: Opcoes;
+};
+
+
+export type MutationSavePushTokenArgs = {
+  deviceId: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type Opcoes = {
@@ -111,6 +118,7 @@ export type Pergunta = {
 
 export type Query = {
   __typename?: 'Query';
+  getPushToken?: Maybe<Token>;
   helloOpR: Scalars['String'];
   helloPergunta: Scalars['String'];
   helloQuesitonario: Scalars['String'];
@@ -123,6 +131,11 @@ export type Query = {
   questionarios: Array<Questionario>;
   searchUser?: Maybe<Array<User>>;
   user?: Maybe<User>;
+};
+
+
+export type QueryGetPushTokenArgs = {
+  deviceId: Scalars['String'];
 };
 
 
@@ -167,6 +180,11 @@ export type Resposta = {
 export type Subscription = {
   __typename?: 'Subscription';
   enviaQuestionario: Questionario;
+};
+
+export type Token = {
+  __typename?: 'Token';
+  token?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -234,6 +252,21 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined } };
+
+export type SavePushTokenMutationVariables = Exact<{
+  deviceId: Scalars['String'];
+  token: Scalars['String'];
+}>;
+
+
+export type SavePushTokenMutation = { __typename?: 'Mutation', savePushToken: boolean };
+
+export type GetPushTokenQueryVariables = Exact<{
+  deviceId: Scalars['String'];
+}>;
+
+
+export type GetPushTokenQuery = { __typename?: 'Query', getPushToken?: { __typename?: 'Token', token?: string | null | undefined } | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -326,6 +359,26 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SavePushTokenDocument = gql`
+    mutation savePushToken($deviceId: String!, $token: String!) {
+  savePushToken(deviceId: $deviceId, token: $token)
+}
+    `;
+
+export function useSavePushTokenMutation() {
+  return Urql.useMutation<SavePushTokenMutation, SavePushTokenMutationVariables>(SavePushTokenDocument);
+};
+export const GetPushTokenDocument = gql`
+    query getPushToken($deviceId: String!) {
+  getPushToken(deviceId: $deviceId) {
+    token
+  }
+}
+    `;
+
+export function useGetPushTokenQuery(options: Omit<Urql.UseQueryArgs<GetPushTokenQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPushTokenQuery>({ query: GetPushTokenDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
