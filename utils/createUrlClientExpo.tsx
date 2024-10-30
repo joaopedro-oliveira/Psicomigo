@@ -8,7 +8,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient, fetchExchange, subscriptionExchange } from "urql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { cacheExchange, Cache } from "@urql/exchange-graphcache";
 import { Client, createClient as createSubClient } from "graphql-ws";
 import { Platform } from "react-native";
 const isServer = () => typeof window === "undefined";
@@ -26,16 +26,27 @@ const GetCookie: any = () => {
   // }
 };
 
+const invalidateQuestionario = (cache: Cache) => {
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter(
+    (info) => info.fieldName === "questionario"
+  );
+  fieldInfos.forEach((fi) => {
+    cache.invalidate("Query", "questionario", fi.arguments || {});
+  });
+  cache.invalidate("Query", "questionario");
+};
+
 const subscriptionClient: Client = createSubClient({
   url: "ws://192.168.0.252:4000/graphql",
 });
 
 export const client = createClient({
   // url: "http://localhost:4000/graphql",
-  url:
-    Platform.OS === "web"
-      ? "http://localhost:4000/graphql"
-      : "http://192.168.0.252:4000/graphql",
+  url: process.env.EXPO_PUBLIC_API_URL!,
+  // Platform.OS === "web"
+  //   ? process.env.EXPO_PUBLIC_DEV_WEB_URL
+  //   : process.env.EXPO_PUBLIC_DEV_DEVICE_URL,
   fetchOptions: {
     credentials: "include" as const,
     headers: cookie

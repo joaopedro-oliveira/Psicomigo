@@ -1,0 +1,17 @@
+query questionario {
+  questionario {
+    id
+    usuarioId
+    respondido
+    pergunta {
+      id
+      pergunta
+      tipo
+      topico
+      opcoes_respostas {
+        id
+        text
+      }
+    }
+  }
+}

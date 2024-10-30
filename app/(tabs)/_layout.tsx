@@ -19,10 +19,26 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
+            tabBarLabel: () => null,
+            // title: "Home",
+            // headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "home" : "home-outline"}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="history"
+          options={{
+            tabBarLabel: () => null,
+            // title: "Home",
+            // headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "calendar" : "calendar-outline"}
                 color={color}
               />
             ),

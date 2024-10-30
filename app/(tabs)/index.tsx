@@ -6,6 +6,7 @@ import {
   useEnviaQuestionariosSubscription,
   useLogoutMutation,
   useMeQuery,
+  useQuestionarioQuery,
 } from "@/generated/graphql";
 import { useIsAuth } from "@/utils/useIsAuth";
 import { isServer } from "@/utils/isServer";
@@ -13,6 +14,7 @@ import { ThemedTextInputField } from "@/components/ThemedTextInputField";
 import { Box, TextField } from "native-base";
 import { useState, useEffect } from "react";
 import CustomButton from "@/components/CustomButtton";
+import Mensagem from "@/components/Mensagem";
 
 type OpcoesResposta = {
   __typename?: "OpcoesResposta";
@@ -36,23 +38,28 @@ const HomeScreen = () => {
     pause: isServer(),
   });
 
-  const [{ data: questionarioData }] = useEnviaQuestionariosSubscription();
+  // const [{ data: questionarioData }] = useEnviaQuestionariosSubscription();
 
+  const [{ data: questionarioData }] = useQuestionarioQuery();
   const [index, setIndex] = useState(0); // Tracks the current question index
   const [response, setResponse] = useState(""); // Tracks user response
+  const [displayResponde, setDisplayResposta] = useState(false);
+  const storeUserRespons: string[] = [];
   const [questions, setQuestions] = useState<Pergunta[]>([]); // Set type to Pergunta[]
 
   useEffect(() => {
     if (!fetching && questionarioData) {
-      if (!questionarioData.enviaQuestionario.pergunta) return;
+      if (!questionarioData.questionario?.pergunta) return;
       console.log(questionarioData);
-      const perguntas = [...questionarioData.enviaQuestionario.pergunta];
+      const perguntas = [...questionarioData.questionario.pergunta];
       setQuestions(perguntas); // Store questions when subscription receives data
     }
   }, [questionarioData]);
 
   const handleAnswer = (answer: any) => {
     console.log(`User answered: ${answer}`);
+    // const
+    // setDisplayResposta(true)
     setResponse(""); // Reset response
     if (!questions) return;
     if (index < questions.length - 1) {
@@ -110,13 +117,55 @@ const HomeScreen = () => {
       <ThemedView style={tw`bg-white w-full h-40%`}>
         {!currentQuestion ? null : (
           <>
-            <ThemedText style={tw`text-lg font-bold mb-4`}>
-              {currentQuestion?.pergunta}
-            </ThemedText>
+            {/* <ThemedView style={tw`flex w-full bg-transparent`}>
+              <ThemedView style={tw`ml-[6%] mt-[10%] max-w-[70%] border p-0`}>
+                <ThemedView
+                  style={tw`relative  min-w-[15%] text-xs max-w-xl px-2 py-2 m-0 rounded-2xl bg-white shadow-md border`}
+                >
+                  </ThemedView>
+                  <ThemedText style={tw`block text-base text-black`}>
+                    {currentQuestion?.pergunta}
+                  </ThemedText>
+                </ThemedView>
+              </ThemedView>
+            </ThemedView> */}
 
+            {/* <ThemedView style={tw`flex-row items-end bg-transparent`}>
+              <ThemedView
+                style={[
+                  tw`w-0 h-0 border-l-4 border-t-4 border-transparent bg-white`,
+                  {
+                    borderBottomWidth: 4,
+                    borderBottomColor: "#f3f4f6", // Tail background color (light gray)
+                    marginLeft: 2,
+                    marginBottom: -1,
+                  },
+                ]}
+              />
+
+              <ThemedView
+                style={tw`bg-gray-100 px-4 py-2 rounded-lg border border-gray-300 max-w-xs`}
+              >
+                <ThemedText style={tw`text-black`}>
+                  {currentQuestion?.pergunta}
+                </ThemedText>
+              </ThemedView>
+            </ThemedView> */}
+            <ThemedView style={tw`mt-9 bg-transparent`}>
+              <Mensagem
+                content={currentQuestion?.pergunta}
+                key={currentQuestion?.id}
+                isQuestion={true}
+              />
+            </ThemedView>
+            {/* <ThemedView>
+              <ThemedText style={tw`text-lg font-bold mb-4`}>
+                {currentQuestion?.pergunta}
+              </ThemedText>
+            </ThemedView> */}
             {currentQuestion?.opcoes_respostas &&
             currentQuestion.opcoes_respostas.length > 0 ? (
-              <ThemedView style={tw`flex flex-row flex-wrap`}>
+              <ThemedView style={tw`bg-transparent flex flex-row flex-wrap`}>
                 {currentQuestion.opcoes_respostas.map((answer, idx) => (
                   <CustomButton
                     key={idx}

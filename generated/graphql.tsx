@@ -128,6 +128,7 @@ export type Query = {
   pacientes?: Maybe<Array<User>>;
   pacientesDoutor?: Maybe<Array<User>>;
   perguntas?: Maybe<Array<Pergunta>>;
+  questionario?: Maybe<Questionario>;
   questionarios: Array<Questionario>;
   searchUser?: Maybe<Array<User>>;
   user?: Maybe<User>;
@@ -273,6 +274,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, profilePicture: string } | null | undefined };
 
+export type QuestionarioQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QuestionarioQuery = { __typename?: 'Query', questionario?: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, pergunta?: Array<{ __typename?: 'Pergunta', id: number, pergunta: string, tipo: string, topico: string, opcoes_respostas?: Array<{ __typename?: 'OpcoesResposta', id: number, text: string }> | null | undefined }> | null | undefined } | null | undefined };
+
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
@@ -390,6 +396,29 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const QuestionarioDocument = gql`
+    query questionario {
+  questionario {
+    id
+    usuarioId
+    respondido
+    pergunta {
+      id
+      pergunta
+      tipo
+      topico
+      opcoes_respostas {
+        id
+        text
+      }
+    }
+  }
+}
+    `;
+
+export function useQuestionarioQuery(options: Omit<Urql.UseQueryArgs<QuestionarioQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<QuestionarioQuery>({ query: QuestionarioDocument, ...options });
 };
 export const GetUserDocument = gql`
     query getUser($userId: String!) {
