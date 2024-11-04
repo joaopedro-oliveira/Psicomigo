@@ -6,7 +6,6 @@ import Constants from "expo-constants";
 import {
   useEnviaQuestionariosSubscription,
   useMeQuery,
-  useSavePushTokenMutation,
 } from "@/generated/graphql";
 
 Notifications.setNotificationHandler({
@@ -28,22 +27,54 @@ export default function App() {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
-  const [{ data }] = useEnviaQuestionariosSubscription();
-  const [, savePushToken] = useSavePushTokenMutation();
-  const [{ data: meData }] = useMeQuery();
+  const { data } = useEnviaQuestionariosSubscription();
+  const { data: meData } = useMeQuery();
+
+  type messageType = {
+    to: string;
+    sound: string;
+    title: string;
+    body: string;
+    data: {};
+  };
+
+  async function sendPushNotification(
+    expoPushToken: string,
+    message: messageType
+  ) {
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+  }
+
   useEffect(() => {
     if (data?.enviaQuestionario) {
       if (!meData?.me) return;
 
       if (meData.me.id === data.enviaQuestionario.usuarioId) {
-        Notifications.scheduleNotificationAsync({
-          content: {
-            title: "Novo questionário!" + data.enviaQuestionario.id,
-            body:
-              "Id do usuário:" + data.enviaQuestionario.usuarioId.toString(),
-          },
-          trigger: null,
-        });
+        const message = {
+          to: expoPushToken,
+          sound: "default",
+          title: "Original Title",
+          body: "And here is the body!",
+          data: { someData: "goes here" },
+        };
+
+        sendPushNotification(expoPushToken, message);
+        // Notifications.scheduleNotificationAsync({
+        //   content: {
+        //     title: "Novo questionário!" + data.enviaQuestionario.id,
+        //     body:
+        //       "Id do usuário:" + data.enviaQuestionario.usuarioId.toString(),
+        //   },
+        //   trigger: { seconds: 2 },
+        // });
       }
     }
   }, [data]);
@@ -108,14 +139,16 @@ async function registerForPushNotificationsAsync() {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
+    console.log(finalStatus);
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      // alert("Failed to get push token for push notification!");
       return;
     }
+    // console.log(finalStatus);
     // Learn more about projectId:
     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
     // EAS projectId is used here.
@@ -131,7 +164,7 @@ async function registerForPushNotificationsAsync() {
           projectId,
         })
       ).data;
-      console.log(token);
+      // console.log(token);
     } catch (e) {
       token = `${e}`;
     }

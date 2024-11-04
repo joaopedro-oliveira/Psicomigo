@@ -1,12 +1,22 @@
+import {
+  useRouter,
+  usePathname,
+  useLocalSearchParams,
+  useSegments,
+} from "expo-router";
 
-import {  useRouter, usePathname, useGlobalSearchParams  } from "expo-router";
+export const useGetPerguntaId = () => {
+  // const router = useRouter();
+  // const params = useLocalSearchParams();
 
+  const segments = useSegments();
 
+  // Assuming 'id' is in the last segment of the path, like /something/1
+  const Id =
+    segments && segments.length > 0
+      ? parseInt(segments[segments.length - 1])
+      : -1;
 
-export const useGetUserId = () => {
-  const router = useRouter();
-  const params = useGlobalSearchParams()
-
-  const Id = typeof params.query === "string" ? params.query  : "";
+  // const Id = typeof params.query.id === "string" ? parseInt(params.query.id) : -1;
   return Id;
 };

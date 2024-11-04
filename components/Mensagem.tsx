@@ -5,10 +5,14 @@ import { ThemedText } from "./ThemedText";
 interface MensagemProps {
   content: string;
   isQuestion: boolean;
-  key: number;
+  keyNumber: number;
 }
 
-const Mensagem: React.FC<MensagemProps> = ({ content, isQuestion, key }) => {
+const Mensagem: React.FC<MensagemProps> = ({
+  content,
+  isQuestion,
+  keyNumber,
+}) => {
   return (
     <>
       {!isQuestion ? (
@@ -25,7 +29,7 @@ const Mensagem: React.FC<MensagemProps> = ({ content, isQuestion, key }) => {
             alignSelf: "flex-end",
             //   borderRadius: 20,
           }}
-          key={key}
+          key={keyNumber}
         >
           <ThemedText style={{ fontSize: 16, color: "#fff" }}>
             {content}
@@ -52,11 +56,11 @@ const Mensagem: React.FC<MensagemProps> = ({ content, isQuestion, key }) => {
             //alignItems:"center",
             borderRadius: 15,
           }}
-          key={key}
+          key={keyNumber}
         >
           <ThemedText
             style={{ fontSize: 16, color: "#000", justifyContent: "center" }}
-            key={key}
+            // key={key}
           >
             {" "}
             {content}

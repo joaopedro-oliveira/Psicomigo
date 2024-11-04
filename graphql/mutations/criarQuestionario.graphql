@@ -1,19 +1,16 @@
-subscription enviaQuestionarios {
-  enviaQuestionario {
+mutation criarQuestionario {
+  criarQuestionario {
     id
     usuarioId
     perguntas {
       id
       pergunta
-      tipo
-      topico
       opcoes_respostas {
-        id
         text
       }
     }
+    peso
     respondido
     dataReposta
-    peso
   }
 }

@@ -4,9 +4,12 @@ import {
   MeDocument,
   LoginMutation,
   RegisterMutation,
+  CriarPerguntaMutation,
+  DeletarPerguntaMutation,
+  DeletarPerguntaMutationVariables,
 } from "@/generated/graphql";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createClient, fetchExchange, subscriptionExchange } from "urql";
+import { createClient, fetchExchange, Query, subscriptionExchange } from "urql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import { cacheExchange, Cache } from "@urql/exchange-graphcache";
 import { Client, createClient as createSubClient } from "graphql-ws";
@@ -20,10 +23,10 @@ async function getCookie() {
 }
 
 const GetCookie: any = () => {
-  // if (isServer()) {
-  cookie = getCookie();
-  console.log("cookie" + getCookie());
-  // }
+  if (isServer() && Platform.OS === "web") {
+    cookie = getCookie();
+    console.log("cookie" + getCookie());
+  }
 };
 
 const invalidateQuestionario = (cache: Cache) => {
@@ -37,23 +40,34 @@ const invalidateQuestionario = (cache: Cache) => {
   cache.invalidate("Query", "questionario");
 };
 
+const invalidatePerguntas = (cache: Cache) => {
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter((info) => info.fieldName === "perguntas");
+  fieldInfos.forEach((fi) => {
+    cache.invalidate("Query", "perguntas", fi.arguments || {});
+  });
+  cache.invalidate("Query", "perguntas");
+};
+
 const subscriptionClient: Client = createSubClient({
+  // url: process.env.EXPO_PUBLIC_DEV_SUBSCRIPTION_URL as string,
   url: "ws://192.168.0.252:4000/graphql",
 });
 
 export const client = createClient({
   // url: "http://localhost:4000/graphql",
-  url: process.env.EXPO_PUBLIC_API_URL!,
-  // Platform.OS === "web"
-  //   ? process.env.EXPO_PUBLIC_DEV_WEB_URL
-  //   : process.env.EXPO_PUBLIC_DEV_DEVICE_URL,
+  // url: process.env.EXPO_PUBLIC_API_URL!,
+  url:
+    Platform.OS === "web"
+      ? process.env.EXPO_PUBLIC_DEV_WEB_URL!
+      : process.env.EXPO_PUBLIC_DEV_DEVICE_URL!,
   fetchOptions: {
     credentials: "include" as const,
     headers: cookie
       ? {
           cookie,
         }
-      : (cookie = GetCookie),
+      : (cookie = GetCookie()),
   },
   exchanges: [
     fetchExchange,
@@ -77,6 +91,18 @@ export const client = createClient({
               () => ({ me: null })
             );
           },
+
+          deletarPergunta: (_result, args, cache, info) => {
+            cache.invalidate({
+              __typename: "Pergunta",
+              id: (args as DeletarPerguntaMutationVariables).id,
+            });
+          },
+
+          criarPergunta: (_result, args, cache, info) => {
+            invalidatePerguntas(cache);
+          },
+
           login: (_result, args, cache, info) => {
             console.log("chache exchanged?");
             betterUpdateQuery<LoginMutation, MeQuery>(

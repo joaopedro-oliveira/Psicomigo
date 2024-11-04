@@ -1,0 +1,5 @@
+mutation atualizarPerguntas($input: PerguntaInput!, $id: Int!) {
+  atualizarPergunta(input: $input, id: $id) {
+    ...PerguntaPadrao
+  }
+}

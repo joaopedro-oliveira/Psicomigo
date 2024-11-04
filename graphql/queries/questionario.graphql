@@ -3,7 +3,7 @@ query questionario {
     id
     usuarioId
     respondido
-    pergunta {
+    perguntas {
       id
       pergunta
       tipo
@@ -12,6 +12,14 @@ query questionario {
         id
         text
       }
+    }
+    respostas {
+      id
+      pergunta
+      pergunta_id
+      opcao_resposta_id
+      opcao_resposta_texto
+      resposta_livre
     }
   }
 }

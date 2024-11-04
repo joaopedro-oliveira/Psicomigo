@@ -1,0 +1,13 @@
+fragment PerguntaPadrao on Pergunta {
+  id
+  pergunta
+  tipo
+  topico
+  opcoes_respostas {
+    text
+    id
+  }
+  perguntaAtiva
+  creatorId
+  createdAt
+}

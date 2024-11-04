@@ -14,7 +14,7 @@ import { useNavigation } from "expo-router";
 export default function RegisterLayout() {
   const colorScheme = useColorScheme();
   const Stack = createStackNavigator();
-  const [, register] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const params = useLocalSearchParams();
   const next = params.next;
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function RegisterLayout() {
         onSubmit={async (values, { setErrors }) => {
           console.log(values);
           values.dataNascimento = new Date();
-          const response = await register({ options: values });
+          const response = await register({ variables: { options: values } });
           console.log(response);
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data.register.errors));

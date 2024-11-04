@@ -1,0 +1,5 @@
+mutation criarPergunta($input: PerguntaInput!) {
+  criarPergunta(input: $input) {
+    ...PerguntaPadrao
+  }
+}

@@ -36,6 +36,7 @@ export default function NotificationListener() {
 
   useEffect(() => {
     if (data?.enviaQuestionario) {
+      console.log(data?.enviaQuestionario);
       if (!meData?.me) return;
 
       if (meData.me.id === data.enviaQuestionario.usuarioId) {

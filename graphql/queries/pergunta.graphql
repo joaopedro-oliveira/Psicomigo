@@ -1,0 +1,5 @@
+query Pergunta($perguntaId: Int!) {
+  pergunta(perguntaId: $perguntaId) {
+    ...PerguntaPadrao
+  }
+}
