@@ -42,6 +42,7 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
+  responderPergunta: Scalars['Boolean'];
   savePushToken: Scalars['Boolean'];
 };
 
@@ -95,6 +96,11 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationResponderPerguntaArgs = {
+  input: RespostaInput;
+};
+
+
 export type MutationSavePushTokenArgs = {
   deviceId: Scalars['String'];
   token: Scalars['String'];
@@ -124,6 +130,11 @@ export type OpcoesResposta = {
 export type OpcoesRespostaInput = {
   id?: InputMaybe<Scalars['Float']>;
   text: Scalars['String'];
+};
+
+export type OpcoesRespostaInputRe = {
+  id?: InputMaybe<Scalars['Int']>;
+  text?: InputMaybe<Scalars['String']>;
 };
 
 export type OpcoesRespostaInterface = {
@@ -223,6 +234,12 @@ export type Resposta = {
   resposta_livre?: Maybe<Scalars['String']>;
   tipo: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type RespostaInput = {
+  opcaoResposta?: InputMaybe<Array<OpcoesRespostaInputRe>>;
+  respostaId: Scalars['Int'];
+  respostaLivre?: InputMaybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -331,6 +348,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, tipo: string } | null | undefined } };
+
+export type ResponderPerguntaMutationVariables = Exact<{
+  input: RespostaInput;
+}>;
+
+
+export type ResponderPerguntaMutation = { __typename?: 'Mutation', responderPergunta: boolean };
 
 export type SavePushTokenMutationVariables = Exact<{
   deviceId: Scalars['String'];
@@ -736,6 +760,37 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const ResponderPerguntaDocument = gql`
+    mutation responderPergunta($input: RespostaInput!) {
+  responderPergunta(input: $input)
+}
+    `;
+export type ResponderPerguntaMutationFn = Apollo.MutationFunction<ResponderPerguntaMutation, ResponderPerguntaMutationVariables>;
+
+/**
+ * __useResponderPerguntaMutation__
+ *
+ * To run a mutation, you first call `useResponderPerguntaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResponderPerguntaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [responderPerguntaMutation, { data, loading, error }] = useResponderPerguntaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useResponderPerguntaMutation(baseOptions?: Apollo.MutationHookOptions<ResponderPerguntaMutation, ResponderPerguntaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResponderPerguntaMutation, ResponderPerguntaMutationVariables>(ResponderPerguntaDocument, options);
+      }
+export type ResponderPerguntaMutationHookResult = ReturnType<typeof useResponderPerguntaMutation>;
+export type ResponderPerguntaMutationResult = Apollo.MutationResult<ResponderPerguntaMutation>;
+export type ResponderPerguntaMutationOptions = Apollo.BaseMutationOptions<ResponderPerguntaMutation, ResponderPerguntaMutationVariables>;
 export const SavePushTokenDocument = gql`
     mutation savePushToken($deviceId: String!, $token: String!) {
   savePushToken(deviceId: $deviceId, token: $token)

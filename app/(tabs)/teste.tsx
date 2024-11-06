@@ -10,6 +10,7 @@ import {
   useCriarPerguntaMutation,
   Resposta,
   RespostaPadraoFragment,
+  useResponderPerguntaMutation,
 } from "@/generated/graphql";
 import { isServer } from "@/utils/isServer";
 import CustomButton from "@/components/CustomButtton";
@@ -70,7 +71,7 @@ const Teste = () => {
   const { data: questionarioData, loading } = useQuestionarioQuery({
     notifyOnNetworkStatusChange: true,
   });
-  const [responderPergunta] = use;
+  const [responderPergunta] = useResponderPerguntaMutation();
 
   useEffect(() => {
     if (questionarioData?.questionario) {
@@ -124,11 +125,50 @@ const Teste = () => {
           <Formik<Resposta[]>
             initialValues={questions}
             enableReinitialize
-            onSubmit={(values) => {
-              await;
+            onSubmit={async (values) => {
+              console.log(values);
+              for (const value of values) {
+                if (value.respondido) {
+                  continue;
+                }
+
+                console.log(value);
+
+                const op = await Promise.all(
+                  value.opcao_resposta?.map(async (opcao) => {
+                    return {
+                      id: opcao.id,
+                      text: opcao.text,
+                    };
+                  }) || []
+                );
+
+                const response = await responderPergunta({
+                  variables: {
+                    input: {
+                      respostaId: value.id,
+                      opcaoResposta: op,
+                      respostaLivre: value.resposta_livre,
+                    },
+                  },
+                  update: (cache) => {
+                    cache.evict({ fieldName: "questionario" });
+                  },
+                });
+
+                if (response.errors || !response.data?.responderPergunta) {
+                  console.log(response.errors);
+                } else if (response.data?.responderPergunta) {
+                  console.log(response.data?.responderPergunta);
+
+                  // navigation.navigate("Perguntas");
+                }
+              }
+
+              // setIndex((prev) => prev + 1);
             }}
           >
-            {({ values, setFieldValue }) => (
+            {({ values, setFieldValue, handleSubmit }) => (
               <>
                 {values.map((conjunto, index) =>
                   conjunto.respondido ? (
@@ -184,7 +224,13 @@ const Teste = () => {
                                 <CustomButton
                                   key={answer.id}
                                   style={tw`bg-blue-400 p-2 m-1 rounded`}
-                                  onPress={() => setIndex((prev) => prev + 1)}
+                                  onPress={() => {
+                                    setFieldValue(
+                                      `questions.${index}.opcao_resposta`,
+                                      { id: answer.id, text: answer.text }
+                                    ),
+                                      handleSubmit();
+                                  }}
                                   title={answer.text!}
                                 />
                               ))}
@@ -201,7 +247,7 @@ const Teste = () => {
                                 text
                               )
                             }
-                            onSubmitEditing={() => setIndex((prev) => prev + 1)}
+                            onSubmitEditing={() => handleSubmit()}
                           />
                         )}
                       </ThemedView>
