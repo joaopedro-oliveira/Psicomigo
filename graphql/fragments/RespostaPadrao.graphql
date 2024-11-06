@@ -1,0 +1,17 @@
+fragment RespostaPadrao on Questionario {
+  respostas {
+    id
+    pergunta
+    pergunta_id
+    opcao_resposta {
+      id
+      text
+    }
+    opcao_resposta_escolhida {
+      id
+      text
+    }
+    respondido
+    resposta_livre
+  }
+}

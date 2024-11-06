@@ -62,7 +62,7 @@ const HomeScreen = () => {
   const handleAnswer = (answer: any) => {
     console.log(`User answered: ${answer}`);
 
-    setResponse(""); // Reset response
+    setResponse(answer); // Reset response
     if (!questions) return;
     if (index < questions.length - 1) {
       setIndex(index + 1); // Move to the next question
@@ -86,8 +86,9 @@ const HomeScreen = () => {
         <CustomButton
           title="Logout"
           onPress={async () => {
+            await logout();
             await apollo.resetStore();
-            console.log("working?");
+            // console.log("working?");
             // router.replace({ pathname: `./${segments.join("/")}` });
             // router.replace({ pathname: `/login` });
           }}
@@ -180,11 +181,6 @@ const HomeScreen = () => {
                   isQuestion={true}
                 />
               </ThemedView>
-              {/* <ThemedView>
-              <ThemedText style={tw`text-lg font-bold mb-4`}>
-                {currentQuestion?.pergunta}
-              </ThemedText>
-            </ThemedView> */}
               {currentQuestion?.opcoes_respostas &&
               currentQuestion.opcoes_respostas.length > 0 ? (
                 <ThemedView style={tw`bg-transparent flex flex-row flex-wrap`}>

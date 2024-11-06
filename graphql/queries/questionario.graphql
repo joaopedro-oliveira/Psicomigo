@@ -3,23 +3,7 @@ query questionario {
     id
     usuarioId
     respondido
-    perguntas {
-      id
-      pergunta
-      tipo
-      topico
-      opcoes_respostas {
-        id
-        text
-      }
-    }
-    respostas {
-      id
-      pergunta
-      pergunta_id
-      opcao_resposta_id
-      opcao_resposta_texto
-      resposta_livre
-    }
+    ...RespostaPadrao
+    dataReposta
   }
 }

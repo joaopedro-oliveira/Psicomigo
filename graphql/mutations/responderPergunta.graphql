@@ -1,0 +1,3 @@
+mutation responderPergunta($input: RespostaInput!) {
+  responderPergunta(input: $input)
+}

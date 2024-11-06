@@ -100,9 +100,12 @@ const CadastrarPerguntas: React.FC<CadastrarPerguntasProps> = ({
               // console.log(values);
               const response = await criarPerguntas({
                 variables: { input: values },
+                update: (cache) => {
+                  cache.evict({ fieldName: "perguntas" });
+                },
               });
               if (response.errors || !response.data?.criarPergunta.id) {
-                // console.log(response.error);
+                console.log(response.errors);
               } else if (response.data?.criarPergunta) {
                 // console.log(response.data?.criarPergunta);
 
@@ -270,7 +273,7 @@ const CadastrarPerguntas: React.FC<CadastrarPerguntasProps> = ({
                             placeholder={`Opcão de resposta ${index + 1}`}
                             onChangeText={(text) =>
                               setFieldValue(
-                                `opcoes_respostas.${index}.texto`,
+                                `opcoes_respostas.${index}.text`,
                                 text
                               )
                             }
@@ -286,7 +289,7 @@ const CadastrarPerguntas: React.FC<CadastrarPerguntasProps> = ({
                       ))}
                       <Pressable
                         style={tw`flex-row mt-2 h-8 w-8 justify-center items-center rounded-lg bg-[#4894FE]`}
-                        onPress={() => push({ texto: "" })}
+                        onPress={() => push({ text: "" })}
                       >
                         <Ionicons name="add" size={24} color={"white"} />
                       </Pressable>

@@ -2,13 +2,7 @@ mutation criarQuestionario {
   criarQuestionario {
     id
     usuarioId
-    perguntas {
-      id
-      pergunta
-      opcoes_respostas {
-        text
-      }
-    }
+    ...RespostaPadrao
     peso
     respondido
     dataReposta

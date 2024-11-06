@@ -126,6 +126,12 @@ export type OpcoesRespostaInput = {
   text: Scalars['String'];
 };
 
+export type OpcoesRespostaInterface = {
+  __typename?: 'OpcoesRespostaInterface';
+  id?: Maybe<Scalars['Int']>;
+  text?: Maybe<Scalars['String']>;
+};
+
 export type Pergunta = {
   __typename?: 'Pergunta';
   createdAt: Scalars['String'];
@@ -197,7 +203,6 @@ export type Questionario = {
   createdAt: Scalars['String'];
   dataReposta?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
-  perguntas: Array<Pergunta>;
   peso: Scalars['Float'];
   respondido: Scalars['Boolean'];
   respostas?: Maybe<Array<Resposta>>;
@@ -209,12 +214,14 @@ export type Resposta = {
   __typename?: 'Resposta';
   createdAt: Scalars['String'];
   id: Scalars['Int'];
-  opcao_resposta_id: Array<Scalars['Int']>;
-  opcao_resposta_texto: Array<Scalars['String']>;
+  opcao_resposta?: Maybe<Array<OpcoesRespostaInterface>>;
+  opcao_resposta_escolhida?: Maybe<Array<OpcoesRespostaInterface>>;
   pergunta: Scalars['String'];
   pergunta_id: Scalars['Int'];
-  questionario: Questionario;
-  resposta_livre: Scalars['String'];
+  questionario?: Maybe<Questionario>;
+  respondido: Scalars['Boolean'];
+  resposta_livre?: Maybe<Scalars['String']>;
+  tipo: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
@@ -261,6 +268,8 @@ export type RegularUserFragment = { __typename?: 'User', id: number, username: s
 
 export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, tipo: string } | null | undefined };
 
+export type RespostaPadraoFragment = { __typename?: 'Questionario', respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined };
+
 export type AtualizarPerguntasMutationVariables = Exact<{
   input: PerguntaInput;
   id: Scalars['Int'];
@@ -287,7 +296,7 @@ export type CriarPerguntaMutation = { __typename?: 'Mutation', criarPergunta: { 
 export type CriarQuestionarioMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CriarQuestionarioMutation = { __typename?: 'Mutation', criarQuestionario: Array<{ __typename?: 'Questionario', id: number, usuarioId: number, peso: number, respondido: boolean, dataReposta?: any | null | undefined, perguntas: Array<{ __typename?: 'Pergunta', id: number, pergunta: string, opcoes_respostas?: Array<{ __typename?: 'OpcoesResposta', text: string }> | null | undefined }> }> };
+export type CriarQuestionarioMutation = { __typename?: 'Mutation', criarQuestionario: Array<{ __typename?: 'Questionario', id: number, usuarioId: number, peso: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined }> };
 
 export type DeletarPerguntaMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -358,7 +367,7 @@ export type PerguntasQuery = { __typename?: 'Query', perguntas?: Array<{ __typen
 export type QuestionarioQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QuestionarioQuery = { __typename?: 'Query', questionario?: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, perguntas: Array<{ __typename?: 'Pergunta', id: number, pergunta: string, tipo: string, topico: string, opcoes_respostas?: Array<{ __typename?: 'OpcoesResposta', id: number, text: string }> | null | undefined }>, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, opcao_resposta_id: Array<number>, opcao_resposta_texto: Array<string>, resposta_livre: string }> | null | undefined } | null | undefined };
+export type QuestionarioQuery = { __typename?: 'Query', questionario?: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } | null | undefined };
 
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -370,7 +379,7 @@ export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User',
 export type EnviaQuestionariosSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, peso: number, perguntas: Array<{ __typename?: 'Pergunta', id: number, pergunta: string, tipo: string, topico: string, opcoes_respostas?: Array<{ __typename?: 'OpcoesResposta', id: number, text: string }> | null | undefined }> } };
+export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, peso: number, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } };
 
 export const PerguntaPadraoFragmentDoc = gql`
     fragment PerguntaPadrao on Pergunta {
@@ -411,6 +420,25 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}`;
+export const RespostaPadraoFragmentDoc = gql`
+    fragment RespostaPadrao on Questionario {
+  respostas {
+    id
+    pergunta
+    pergunta_id
+    opcao_resposta {
+      id
+      text
+    }
+    opcao_resposta_escolhida {
+      id
+      text
+    }
+    respondido
+    resposta_livre
+  }
+}
+    `;
 export const AtualizarPerguntasDocument = gql`
     mutation atualizarPerguntas($input: PerguntaInput!, $id: Int!) {
   atualizarPergunta(input: $input, id: $id) {
@@ -517,19 +545,13 @@ export const CriarQuestionarioDocument = gql`
   criarQuestionario {
     id
     usuarioId
-    perguntas {
-      id
-      pergunta
-      opcoes_respostas {
-        text
-      }
-    }
+    ...RespostaPadrao
     peso
     respondido
     dataReposta
   }
 }
-    `;
+    ${RespostaPadraoFragmentDoc}`;
 export type CriarQuestionarioMutationFn = Apollo.MutationFunction<CriarQuestionarioMutation, CriarQuestionarioMutationVariables>;
 
 /**
@@ -910,27 +932,11 @@ export const QuestionarioDocument = gql`
     id
     usuarioId
     respondido
-    perguntas {
-      id
-      pergunta
-      tipo
-      topico
-      opcoes_respostas {
-        id
-        text
-      }
-    }
-    respostas {
-      id
-      pergunta
-      pergunta_id
-      opcao_resposta_id
-      opcao_resposta_texto
-      resposta_livre
-    }
+    ...RespostaPadrao
+    dataReposta
   }
 }
-    `;
+    ${RespostaPadraoFragmentDoc}`;
 
 /**
  * __useQuestionarioQuery__
@@ -1012,22 +1018,13 @@ export const EnviaQuestionariosDocument = gql`
   enviaQuestionario {
     id
     usuarioId
-    perguntas {
-      id
-      pergunta
-      tipo
-      topico
-      opcoes_respostas {
-        id
-        text
-      }
-    }
+    ...RespostaPadrao
     respondido
     dataReposta
     peso
   }
 }
-    `;
+    ${RespostaPadraoFragmentDoc}`;
 
 /**
  * __useEnviaQuestionariosSubscription__

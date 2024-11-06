@@ -37,6 +37,17 @@ export default function RootLayout() {
     credentials: "include",
   });
 
+  // const httpLink = new HttpLink({
+  //   uri: process.env.EXPO_PUBLIC_API_URL,
+  //   // credentials: "include",
+  // });
+
+  // const wsLink = new GraphQLWsLink(
+  //   createClient({
+  //     url: process.env.EXPO_PUBLIC_API_SUBSCRIPTION_URL as string,
+  //   })
+  // );
+
   const splitLink = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
