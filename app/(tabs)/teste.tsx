@@ -187,7 +187,7 @@ const Teste = () => {
                         keyNumber={conjunto.id}
                         content={
                           conjunto.tipo === "resposta livre"
-                            ? conjunto?.resposta_livre || ""
+                            ? conjunto.resposta_livre || ""
                             : conjunto.opcao_resposta_escolhida
                             ? conjunto.opcao_resposta_escolhida
                                 .map((op) => op.text)
@@ -217,7 +217,13 @@ const Teste = () => {
                             key={`${conjunto.pergunta_id}-options`}
                             style={tw`flex-row flex-wrap`}
                           >
-                            <>{console.log("entrou aqui")}</>
+                            <>
+                              {console.log(
+                                conjunto.tipo,
+                                " ",
+                                conjunto.resposta_livre
+                              )}
+                            </>
 
                             {conjunto.opcao_resposta &&
                               conjunto.opcao_resposta.map((answer) => (
@@ -236,19 +242,22 @@ const Teste = () => {
                               ))}
                           </ThemedView>
                         ) : (
-                          <TextInput
-                            key={`${conjunto.id}-textinput`}
-                            style={tw`border p-2 mt-2 rounded`}
-                            placeholder="Type your answer..."
-                            value={conjunto.resposta_livre || ""}
-                            onChangeText={(text) =>
-                              setFieldValue(
-                                `questions.${index}.resposta_livre`,
-                                text
-                              )
-                            }
-                            onSubmitEditing={() => handleSubmit()}
-                          />
+                          <>
+                            {console.log("entrou aqui aaaa")}
+                            <TextInput
+                              key={`${conjunto.id}-textinput`}
+                              style={tw`border p-2 mt-2 rounded bg-white`}
+                              placeholder="Type your answer..."
+                              value={conjunto.resposta_livre!}
+                              onChangeText={(text) =>
+                                setFieldValue(
+                                  `questions.${index}.resposta_livre`,
+                                  text
+                                )
+                              }
+                              onSubmitEditing={() => handleSubmit()}
+                            />
+                          </>
                         )}
                       </ThemedView>
                     )

@@ -3,6 +3,7 @@ fragment RespostaPadrao on Questionario {
     id
     pergunta
     pergunta_id
+    tipo
     opcao_resposta {
       id
       text
