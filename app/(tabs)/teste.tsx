@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import { Image, ScrollView, TextInput } from "react-native";
 import { Formik } from "formik";
-// import { ThemedText, ThemedView, CustomButton, Mensagem } from "@/components";
 import tw from "twrnc";
 import {
   useQuestionarioQuery,
   useMeQuery,
-  useLogoutMutation,
   useCriarPerguntaMutation,
   Resposta,
-  RespostaPadraoFragment,
   useResponderPerguntaMutation,
 } from "@/generated/graphql";
 import { isServer } from "@/utils/isServer";
@@ -18,50 +15,7 @@ import { KeyboardWrapper } from "@/components/KeyboardWrapper";
 import Mensagem from "@/components/Mensagem";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-
-// type OpcoesResposta = {
-//   __typename?: "OpcoesResposta";
-//   id: number;
-//   text: string;
-// };
-
-// type Pergunta = {
-//   __typename?: "Pergunta";
-//   id: number;
-//   pergunta: string;
-//   tipo: string;
-//   topico: string;
-//   opcoes_respostas?: OpcoesResposta[] | null;
-// };
-
-// type PerguntaResposta = {
-//   questionarioId: number;
-//   respondido: boolean | null | undefined;
-//   pergunta: {
-//     __typename?: "Pergunta";
-//     id: number;
-//     pergunta: string;
-//     tipo: string;
-//     topico: string;
-//     opcoes_respostas?:
-//       | Array<{ __typename?: "OpcoesResposta"; id: number; text: string }>
-//       | null
-//       | undefined;
-//   };
-//   resposta?:
-//     | {
-//         __typename?: "Resposta";
-//         id: number;
-//         pergunta: string;
-//         pergunta_id: number;
-//         opcao_resposta_id: Array<number>;
-//         opcao_resposta_texto: Array<string>;
-//         resposta_livre: string;
-//       }
-//     | null
-//     | undefined;
-//   responder: boolean;
-// };
+import { useApolloClient } from "@apollo/client";
 
 const Teste = () => {
   const { data: meData, loading: fetching } = useMeQuery({ skip: isServer() });
@@ -72,12 +26,10 @@ const Teste = () => {
     notifyOnNetworkStatusChange: true,
   });
   const [responderPergunta] = useResponderPerguntaMutation();
-
+  const apollo = useApolloClient();
   useEffect(() => {
     if (questionarioData?.questionario) {
-      questionarioData.questionario.respostas &&
-        setQuestions(questionarioData.questionario.respostas as Resposta[]);
-      console.log(questionarioData.questionario.respostas);
+      setQuestions(questionarioData.questionario.respostas as Resposta[]);
     }
   }, [questionarioData]);
 
@@ -121,27 +73,26 @@ const Teste = () => {
             style={tw`mr-7 w-[56px] h-[56px]`}
           />
         </ThemedView>
+
         {questions.length > 0 ? (
-          <Formik<Resposta[]>
+          <Formik
             initialValues={questions}
             enableReinitialize
             onSubmit={async (values) => {
-              console.log(values);
+              // console.log("Values:", JSON.stringify(values, null, 2));
               for (const value of values) {
                 if (value.respondido) {
+                  console.log("Answered Value:", value);
                   continue;
                 }
 
-                console.log(value);
+                const op =
+                  value.opcao_resposta_escolhida?.map((opcao) => ({
+                    id: opcao.id,
+                    text: opcao.text,
+                  })) || [];
 
-                const op = await Promise.all(
-                  value.opcao_resposta?.map(async (opcao) => {
-                    return {
-                      id: opcao.id,
-                      text: opcao.text,
-                    };
-                  }) || []
-                );
+                console.log(op);
 
                 const response = await responderPergunta({
                   variables: {
@@ -151,21 +102,19 @@ const Teste = () => {
                       respostaLivre: value.resposta_livre,
                     },
                   },
-                  update: (cache) => {
-                    cache.evict({ fieldName: "questionario" });
-                  },
+                  // update: (cache) => {
+                  //   cache.evict({ fieldName: "questionario" });
+                  // },
                 });
 
                 if (response.errors || !response.data?.responderPergunta) {
                   console.log(response.errors);
-                } else if (response.data?.responderPergunta) {
-                  console.log(response.data?.responderPergunta);
-
-                  // navigation.navigate("Perguntas");
+                } else {
+                  console.log("Response:", response.data.responderPergunta);
                 }
               }
 
-              // setIndex((prev) => prev + 1);
+              apollo.cache.evict({ fieldName: "questionario" });
             }}
           >
             {({ values, setFieldValue, handleSubmit }) => (
@@ -189,10 +138,8 @@ const Teste = () => {
                           conjunto.tipo === "resposta livre"
                             ? conjunto.resposta_livre || ""
                             : conjunto.opcao_resposta_escolhida
-                            ? conjunto.opcao_resposta_escolhida
-                                .map((op) => op.text)
-                                .join(", ")
-                            : ""
+                                ?.map((op) => op.text)
+                                .join(", ") || ""
                         }
                         isQuestion={false}
                       />
@@ -217,14 +164,6 @@ const Teste = () => {
                             key={`${conjunto.pergunta_id}-options`}
                             style={tw`flex-row flex-wrap`}
                           >
-                            <>
-                              {console.log(
-                                conjunto.tipo,
-                                " ",
-                                conjunto.resposta_livre
-                              )}
-                            </>
-
                             {conjunto.opcao_resposta &&
                               conjunto.opcao_resposta.map((answer) => (
                                 <CustomButton
@@ -232,32 +171,26 @@ const Teste = () => {
                                   style={tw`bg-blue-400 p-2 m-1 rounded`}
                                   onPress={() => {
                                     setFieldValue(
-                                      `questions.${index}.opcao_resposta`,
-                                      { id: answer.id, text: answer.text }
-                                    ),
-                                      handleSubmit();
+                                      `${index}.opcao_resposta_escolhida`,
+                                      [{ id: answer.id, text: answer.text }]
+                                    );
+                                    handleSubmit();
                                   }}
                                   title={answer.text!}
                                 />
                               ))}
                           </ThemedView>
                         ) : (
-                          <>
-                            {console.log("entrou aqui aaaa")}
-                            <TextInput
-                              key={`${conjunto.id}-textinput`}
-                              style={tw`border p-2 mt-2 rounded bg-white`}
-                              placeholder="Type your answer..."
-                              value={conjunto.resposta_livre!}
-                              onChangeText={(text) =>
-                                setFieldValue(
-                                  `questions.${index}.resposta_livre`,
-                                  text
-                                )
-                              }
-                              onSubmitEditing={() => handleSubmit()}
-                            />
-                          </>
+                          <TextInput
+                            key={`${conjunto.id}-resposta_livre`}
+                            style={tw`border p-2 mt-2 rounded bg-white`}
+                            placeholder="Type your answer..."
+                            value={conjunto.resposta_livre || ""}
+                            onChangeText={(text) =>
+                              setFieldValue(`${index}.resposta_livre`, text)
+                            }
+                            onSubmitEditing={() => handleSubmit()}
+                          />
                         )}
                       </ThemedView>
                     )

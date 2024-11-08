@@ -403,7 +403,7 @@ export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User',
 export type EnviaQuestionariosSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, peso: number, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } };
+export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } };
 
 export const PerguntaPadraoFragmentDoc = gql`
     fragment PerguntaPadrao on Pergunta {
@@ -1074,13 +1074,22 @@ export const EnviaQuestionariosDocument = gql`
   enviaQuestionario {
     id
     usuarioId
-    ...RespostaPadrao
     respondido
+    respostas {
+      id
+      pergunta
+      pergunta_id
+      opcao_resposta {
+        id
+        text
+      }
+      tipo
+      resposta_livre
+    }
     dataReposta
-    peso
   }
 }
-    ${RespostaPadraoFragmentDoc}`;
+    `;
 
 /**
  * __useEnviaQuestionariosSubscription__

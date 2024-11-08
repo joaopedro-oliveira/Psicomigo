@@ -2,9 +2,18 @@ subscription enviaQuestionarios {
   enviaQuestionario {
     id
     usuarioId
-    ...RespostaPadrao
     respondido
+    respostas {
+      id
+      pergunta
+      pergunta_id
+      opcao_resposta {
+        id
+        text
+      }
+      tipo
+      resposta_livre
+    }
     dataReposta
-    peso
   }
 }
