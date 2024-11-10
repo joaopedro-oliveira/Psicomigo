@@ -19,6 +19,7 @@ import { Platform } from "react-native";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { persistCache } from "apollo3-cache-persist";
+import { LocaleConfig } from "react-native-calendars";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -69,6 +70,50 @@ export default function RootLayout() {
   });
 
   const colorScheme = useColorScheme();
+
+  LocaleConfig.locales["pt-br"] = {
+    monthNames: [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ],
+    monthNamesShort: [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ],
+    dayNames: [
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado",
+    ],
+    dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+    today: "Hoje",
+  };
+
+  LocaleConfig.defaultLocale = "pt-br";
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),

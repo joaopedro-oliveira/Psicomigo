@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Text, View, Button, Platform } from "react-native";
+import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import {
+  useEnviaNotificacaoSubscription,
   useEnviaQuestionariosSubscription,
   useMeQuery,
 } from "@/generated/graphql";
+import { useNavigation } from "expo-router";
+import { useApolloClient } from "@apollo/client";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,12 +29,14 @@ export default function App() {
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
-
+  const navigation = useNavigation();
   const { data } = useEnviaQuestionariosSubscription();
   const { data: meData } = useMeQuery();
+  const { data: notificacoes } = useEnviaNotificacaoSubscription();
+  const apollo = useApolloClient();
 
   type messageType = {
-    to: string;
+    to?: string;
     sound: string;
     title: string;
     body: string;
@@ -39,9 +44,10 @@ export default function App() {
   };
 
   async function sendPushNotification(
-    expoPushToken: string,
+    // expoPushToken: string,
     message: messageType
   ) {
+    message.to = expoPushToken;
     await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: {
@@ -50,6 +56,7 @@ export default function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
+      redirect: "follow",
     });
   }
 
@@ -57,16 +64,19 @@ export default function App() {
     if (data?.enviaQuestionario) {
       if (!meData?.me) return;
 
+      apollo.cache.evict({ fieldName: "questionario" });
+
+      if (Platform.OS === "web") return;
+
       if (meData.me.id === data.enviaQuestionario.usuarioId) {
         const message = {
-          to: expoPushToken,
           sound: "default",
           title: "Original Title",
           body: "And here is the body!",
-          data: { someData: "goes here" },
+          data: { someData: "goes here", nagivate: "history" },
         };
 
-        sendPushNotification(expoPushToken, message);
+        sendPushNotification(message);
         // Notifications.scheduleNotificationAsync({
         //   content: {
         //     title: "Novo questionário!" + data.enviaQuestionario.id,
@@ -78,6 +88,22 @@ export default function App() {
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (notificacoes?.enviaNotificacao) {
+      if (!meData?.me) return;
+      if (Platform.OS === "web") return;
+      Notifications.scheduleNotificationAsync({
+        content: {
+          sound: "default",
+          title: notificacoes.enviaNotificacao.title,
+          body: notificacoes.enviaNotificacao.body,
+          data: { nagivate: notificacoes.enviaNotificacao.data?.value },
+        },
+        trigger: { seconds: 2 },
+      });
+    }
+  }, [notificacoes]);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
@@ -96,7 +122,10 @@ export default function App() {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        const { data } = response.notification.request.content;
+        if (data?.nagivate) {
+          navigation.navigate(`${data.nagivate}` as never); // Navigate to the specified screen
+        }
       });
 
     return () => {
@@ -112,16 +141,16 @@ export default function App() {
   return null;
 }
 
-// async function schedulePushNotification() {
-//   await Notifications.scheduleNotificationAsync({
-//     content: {
-//       title: "You've got mail! 📬",
-//       body: 'Here is the notification body',
-//       data: { data: 'goes here', test: { test1: 'more data' } },
-//     },
-//     trigger: { seconds: 2 },
-//   });
-// }
+async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got mail! 📬",
+      body: "Here is the notification body",
+      data: { data: "goes here", test: { test1: "more data" } },
+    },
+    trigger: { seconds: 2 },
+  });
+}
 
 async function registerForPushNotificationsAsync() {
   let token;

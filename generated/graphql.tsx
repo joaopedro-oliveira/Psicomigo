@@ -17,6 +17,12 @@ export type Scalars = {
   Upload: any;
 };
 
+export type DataObject = {
+  __typename?: 'DataObject';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
@@ -104,6 +110,14 @@ export type MutationResponderPerguntaArgs = {
 export type MutationSavePushTokenArgs = {
   deviceId: Scalars['String'];
   token: Scalars['String'];
+};
+
+export type Notificacao = {
+  __typename?: 'Notificacao';
+  body: Scalars['String'];
+  data?: Maybe<DataObject>;
+  sound: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type Opcoes = {
@@ -211,19 +225,20 @@ export type QueryUserArgs = {
 
 export type Questionario = {
   __typename?: 'Questionario';
-  createdAt: Scalars['String'];
-  dataReposta?: Maybe<Scalars['DateTime']>;
+  createdAt: Scalars['DateTime'];
+  dataFinalizacao?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
   peso: Scalars['Float'];
   respondido: Scalars['Boolean'];
   respostas?: Maybe<Array<Resposta>>;
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
   usuarioId: Scalars['Int'];
 };
 
 export type Resposta = {
   __typename?: 'Resposta';
   createdAt: Scalars['String'];
+  dataResposta?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
   opcao_resposta?: Maybe<Array<OpcoesRespostaInterface>>;
   opcao_resposta_escolhida?: Maybe<Array<OpcoesRespostaInterface>>;
@@ -233,7 +248,7 @@ export type Resposta = {
   respondido: Scalars['Boolean'];
   resposta_livre?: Maybe<Scalars['String']>;
   tipo: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type RespostaInput = {
@@ -244,6 +259,7 @@ export type RespostaInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  enviaNotificacao: Notificacao;
   enviaQuestionario: Questionario;
 };
 
@@ -256,14 +272,14 @@ export type User = {
   __typename?: 'User';
   cpf: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  crm: Scalars['String'];
+  crm?: Maybe<Scalars['String']>;
   dataNascimento: Scalars['DateTime'];
   email: Scalars['String'];
   genero: Scalars['String'];
   id: Scalars['Int'];
   medico?: Maybe<User>;
   paciente_ativo: Scalars['Boolean'];
-  pacientes: Array<User>;
+  pacientes?: Maybe<Array<User>>;
   profilePicture: Scalars['String'];
   tipo: Scalars['String'];
   topicosPaciente: Array<Scalars['String']>;
@@ -285,7 +301,7 @@ export type RegularUserFragment = { __typename?: 'User', id: number, username: s
 
 export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, tipo: string } | null | undefined };
 
-export type RespostaPadraoFragment = { __typename?: 'Questionario', respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined };
+export type RespostaPadraoFragment = { __typename?: 'Questionario', respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, dataResposta?: any | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined };
 
 export type AtualizarPerguntasMutationVariables = Exact<{
   input: PerguntaInput;
@@ -313,7 +329,7 @@ export type CriarPerguntaMutation = { __typename?: 'Mutation', criarPergunta: { 
 export type CriarQuestionarioMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CriarQuestionarioMutation = { __typename?: 'Mutation', criarQuestionario: Array<{ __typename?: 'Questionario', id: number, usuarioId: number, peso: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined }> };
+export type CriarQuestionarioMutation = { __typename?: 'Mutation', criarQuestionario: Array<{ __typename?: 'Questionario', id: number, usuarioId: number, peso: number, respondido: boolean, dataFinalizacao?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, dataResposta?: any | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined }> };
 
 export type DeletarPerguntaMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -376,6 +392,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, tipo: string } | null | undefined };
 
+export type PacientesDoutorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PacientesDoutorQuery = { __typename?: 'Query', pacientesDoutor?: Array<{ __typename?: 'User', id: number, username: string, cpf: string, dataNascimento: any, paciente_ativo: boolean, topicosPaciente: Array<string> }> | null | undefined };
+
 export type PerguntaQueryVariables = Exact<{
   perguntaId: Scalars['Int'];
 }>;
@@ -391,7 +412,12 @@ export type PerguntasQuery = { __typename?: 'Query', perguntas?: Array<{ __typen
 export type QuestionarioQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QuestionarioQuery = { __typename?: 'Query', questionario?: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } | null | undefined };
+export type QuestionarioQuery = { __typename?: 'Query', questionario?: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataFinalizacao?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, dataResposta?: any | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } | null | undefined };
+
+export type QuestionariosQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QuestionariosQuery = { __typename?: 'Query', questionarios: Array<{ __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataFinalizacao?: any | null | undefined, createdAt: any, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, respondido: boolean, resposta_livre?: string | null | undefined, dataResposta?: any | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined, opcao_resposta_escolhida?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined }> };
 
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['String'];
@@ -400,10 +426,15 @@ export type GetUserQueryVariables = Exact<{
 
 export type GetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: number, username: string, email: string, createdAt: any, profilePicture: string } | null | undefined };
 
+export type EnviaNotificacaoSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EnviaNotificacaoSubscription = { __typename?: 'Subscription', enviaNotificacao: { __typename?: 'Notificacao', sound: string, title: string, body: string, data?: { __typename?: 'DataObject', key: string, value: string } | null | undefined } };
+
 export type EnviaQuestionariosSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataReposta?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } };
+export type EnviaQuestionariosSubscription = { __typename?: 'Subscription', enviaQuestionario: { __typename?: 'Questionario', id: number, usuarioId: number, respondido: boolean, dataFinalizacao?: any | null | undefined, respostas?: Array<{ __typename?: 'Resposta', id: number, pergunta: string, pergunta_id: number, tipo: string, resposta_livre?: string | null | undefined, opcao_resposta?: Array<{ __typename?: 'OpcoesRespostaInterface', id?: number | null | undefined, text?: string | null | undefined }> | null | undefined }> | null | undefined } };
 
 export const PerguntaPadraoFragmentDoc = gql`
     fragment PerguntaPadrao on Pergunta {
@@ -461,6 +492,7 @@ export const RespostaPadraoFragmentDoc = gql`
     }
     respondido
     resposta_livre
+    dataResposta
   }
 }
     `;
@@ -573,7 +605,7 @@ export const CriarQuestionarioDocument = gql`
     ...RespostaPadrao
     peso
     respondido
-    dataReposta
+    dataFinalizacao
   }
 }
     ${RespostaPadraoFragmentDoc}`;
@@ -903,6 +935,50 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const PacientesDoutorDocument = gql`
+    query pacientesDoutor {
+  pacientesDoutor {
+    id
+    username
+    cpf
+    dataNascimento
+    paciente_ativo
+    topicosPaciente
+  }
+}
+    `;
+
+/**
+ * __usePacientesDoutorQuery__
+ *
+ * To run a query within a React component, call `usePacientesDoutorQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePacientesDoutorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePacientesDoutorQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePacientesDoutorQuery(baseOptions?: Apollo.QueryHookOptions<PacientesDoutorQuery, PacientesDoutorQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PacientesDoutorQuery, PacientesDoutorQueryVariables>(PacientesDoutorDocument, options);
+      }
+export function usePacientesDoutorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PacientesDoutorQuery, PacientesDoutorQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PacientesDoutorQuery, PacientesDoutorQueryVariables>(PacientesDoutorDocument, options);
+        }
+export function usePacientesDoutorSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<PacientesDoutorQuery, PacientesDoutorQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PacientesDoutorQuery, PacientesDoutorQueryVariables>(PacientesDoutorDocument, options);
+        }
+export type PacientesDoutorQueryHookResult = ReturnType<typeof usePacientesDoutorQuery>;
+export type PacientesDoutorLazyQueryHookResult = ReturnType<typeof usePacientesDoutorLazyQuery>;
+export type PacientesDoutorSuspenseQueryHookResult = ReturnType<typeof usePacientesDoutorSuspenseQuery>;
+export type PacientesDoutorQueryResult = Apollo.QueryResult<PacientesDoutorQuery, PacientesDoutorQueryVariables>;
 export const PerguntaDocument = gql`
     query Pergunta($perguntaId: Int!) {
   pergunta(perguntaId: $perguntaId) {
@@ -989,7 +1065,7 @@ export const QuestionarioDocument = gql`
     usuarioId
     respondido
     ...RespostaPadrao
-    dataReposta
+    dataFinalizacao
   }
 }
     ${RespostaPadraoFragmentDoc}`;
@@ -1025,6 +1101,50 @@ export type QuestionarioQueryHookResult = ReturnType<typeof useQuestionarioQuery
 export type QuestionarioLazyQueryHookResult = ReturnType<typeof useQuestionarioLazyQuery>;
 export type QuestionarioSuspenseQueryHookResult = ReturnType<typeof useQuestionarioSuspenseQuery>;
 export type QuestionarioQueryResult = Apollo.QueryResult<QuestionarioQuery, QuestionarioQueryVariables>;
+export const QuestionariosDocument = gql`
+    query questionarios {
+  questionarios {
+    id
+    usuarioId
+    respondido
+    ...RespostaPadrao
+    dataFinalizacao
+    createdAt
+  }
+}
+    ${RespostaPadraoFragmentDoc}`;
+
+/**
+ * __useQuestionariosQuery__
+ *
+ * To run a query within a React component, call `useQuestionariosQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionariosQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionariosQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useQuestionariosQuery(baseOptions?: Apollo.QueryHookOptions<QuestionariosQuery, QuestionariosQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuestionariosQuery, QuestionariosQueryVariables>(QuestionariosDocument, options);
+      }
+export function useQuestionariosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionariosQuery, QuestionariosQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuestionariosQuery, QuestionariosQueryVariables>(QuestionariosDocument, options);
+        }
+export function useQuestionariosSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<QuestionariosQuery, QuestionariosQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<QuestionariosQuery, QuestionariosQueryVariables>(QuestionariosDocument, options);
+        }
+export type QuestionariosQueryHookResult = ReturnType<typeof useQuestionariosQuery>;
+export type QuestionariosLazyQueryHookResult = ReturnType<typeof useQuestionariosLazyQuery>;
+export type QuestionariosSuspenseQueryHookResult = ReturnType<typeof useQuestionariosSuspenseQuery>;
+export type QuestionariosQueryResult = Apollo.QueryResult<QuestionariosQuery, QuestionariosQueryVariables>;
 export const GetUserDocument = gql`
     query getUser($userId: String!) {
   user(userId: $userId) {
@@ -1069,6 +1189,41 @@ export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserSuspenseQueryHookResult = ReturnType<typeof useGetUserSuspenseQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const EnviaNotificacaoDocument = gql`
+    subscription enviaNotificacao {
+  enviaNotificacao {
+    sound
+    title
+    body
+    data {
+      key
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useEnviaNotificacaoSubscription__
+ *
+ * To run a query within a React component, call `useEnviaNotificacaoSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useEnviaNotificacaoSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEnviaNotificacaoSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEnviaNotificacaoSubscription(baseOptions?: Apollo.SubscriptionHookOptions<EnviaNotificacaoSubscription, EnviaNotificacaoSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<EnviaNotificacaoSubscription, EnviaNotificacaoSubscriptionVariables>(EnviaNotificacaoDocument, options);
+      }
+export type EnviaNotificacaoSubscriptionHookResult = ReturnType<typeof useEnviaNotificacaoSubscription>;
+export type EnviaNotificacaoSubscriptionResult = Apollo.SubscriptionResult<EnviaNotificacaoSubscription>;
 export const EnviaQuestionariosDocument = gql`
     subscription enviaQuestionarios {
   enviaQuestionario {
@@ -1086,7 +1241,7 @@ export const EnviaQuestionariosDocument = gql`
       tipo
       resposta_livre
     }
-    dataReposta
+    dataFinalizacao
   }
 }
     `;

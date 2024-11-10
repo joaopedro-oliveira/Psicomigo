@@ -1,9 +1,10 @@
-query questionario {
-  questionario {
+query questionarios {
+  questionarios {
     id
     usuarioId
     respondido
     ...RespostaPadrao
     dataFinalizacao
+    createdAt
   }
 }

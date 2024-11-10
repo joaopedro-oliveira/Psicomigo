@@ -1,0 +1,10 @@
+query pacientesDoutor {
+  pacientesDoutor {
+    id
+    username
+    cpf
+    dataNascimento
+    paciente_ativo
+    topicosPaciente
+  }
+}

@@ -14,5 +14,6 @@ fragment RespostaPadrao on Questionario {
     }
     respondido
     resposta_livre
+    dataResposta
   }
 }

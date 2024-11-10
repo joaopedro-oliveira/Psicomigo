@@ -5,6 +5,6 @@ mutation criarQuestionario {
     ...RespostaPadrao
     peso
     respondido
-    dataReposta
+    dataFinalizacao
   }
 }

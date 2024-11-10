@@ -14,6 +14,6 @@ subscription enviaQuestionarios {
       tipo
       resposta_livre
     }
-    dataReposta
+    dataFinalizacao
   }
 }

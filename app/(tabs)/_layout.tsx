@@ -50,18 +50,6 @@ export default function TabLayout() {
               ),
             }}
           />
-          <Tabs.Screen
-            name="explore"
-            options={{
-              title: "Explore",
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon
-                  name={focused ? "code-slash" : "code-slash-outline"}
-                  color={color}
-                />
-              ),
-            }}
-          />
 
           {/* <Tabs.Screen
             name="teste"
@@ -100,22 +88,6 @@ export default function TabLayout() {
                   color={color}
                 />
               ),
-            }}
-          />
-          <Tabs.Screen
-            name="explore"
-            options={{
-              href: null,
-              title: "Explore",
-              tabBarIcon: ({ color, focused }) => null,
-            }}
-          />
-          <Tabs.Screen
-            name="history"
-            options={{
-              href: null,
-              title: "Explore",
-              tabBarIcon: ({ color, focused }) => null,
             }}
           />
 

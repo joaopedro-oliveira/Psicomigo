@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
-
+import tw from "twrnc";
 interface MensagemProps {
   content: string;
   isQuestion: boolean;
@@ -25,13 +25,19 @@ const Mensagem: React.FC<MensagemProps> = ({
 
             marginTop: 5,
             marginRight: "5%",
-            maxWidth: "50%",
+            maxWidth: "60%",
             alignSelf: "flex-end",
             //   borderRadius: 20,
           }}
           key={keyNumber}
         >
-          <ThemedText style={{ fontSize: 16, color: "#fff" }}>
+          <ThemedText
+            style={{
+              fontSize: 15,
+              fontFamily: "PoppinsRegular",
+              color: "#fff",
+            }}
+          >
             {content}
           </ThemedText>
 
@@ -48,7 +54,7 @@ const Mensagem: React.FC<MensagemProps> = ({
             // borderRadius: 5,
             marginTop: 5,
             marginLeft: "5%",
-            maxWidth: "50%",
+            maxWidth: "70%",
             alignSelf: "flex-start",
             //maxWidth: 500,
             //padding: 14,
@@ -59,10 +65,14 @@ const Mensagem: React.FC<MensagemProps> = ({
           key={keyNumber}
         >
           <ThemedText
-            style={{ fontSize: 16, color: "#000", justifyContent: "center" }}
+            style={{
+              fontSize: 15,
+              color: "#000",
+              justifyContent: "center",
+              fontFamily: "PoppinsRegular",
+            }}
             // key={key}
           >
-            {" "}
             {content}
           </ThemedText>
           <ThemedView style={styles.leftArrow}></ThemedView>

@@ -1,5 +1,11 @@
-import React from 'react';
-import { Pressable, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import React from "react";
+import {
+  Pressable,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 
 interface CustomButtonProps {
   title: string;
@@ -8,7 +14,12 @@ interface CustomButtonProps {
   textStyle?: TextStyle; // Custom style for the text
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, style, textStyle }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  title,
+  onPress,
+  style,
+  textStyle,
+}) => {
   return (
     <Pressable
       style={({ pressed }) => [
@@ -25,13 +36,13 @@ const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, style, text
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#007BFF', // Default button color
+    backgroundColor: "#007BFF", // Default button color
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#FFFFFF', // Default text color
+    color: "#FFFFFF", // Default text color
     fontSize: 16,
   },
 });

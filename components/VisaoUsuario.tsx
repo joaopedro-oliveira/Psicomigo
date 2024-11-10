@@ -1,97 +1,84 @@
-import { useState, useEffect } from "react";
-import { Image, ScrollView, TextInput } from "react-native";
 import { Formik } from "formik";
-import tw from "twrnc";
+import React, { useEffect, useRef, useState } from "react";
+import { ScrollView, TextInput, View } from "react-native";
+import CustomButton from "./CustomButtton";
+import { KeyboardWrapper } from "./KeyboardWrapper";
+import Mensagem from "./Mensagem";
+import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
 import {
-  useQuestionarioQuery,
-  useMeQuery,
-  useCriarPerguntaMutation,
   Resposta,
+  useQuestionarioQuery,
   useResponderPerguntaMutation,
 } from "@/generated/graphql";
-import { isServer } from "@/utils/isServer";
-import CustomButton from "@/components/CustomButtton";
-import { KeyboardWrapper } from "@/components/KeyboardWrapper";
-import Mensagem from "@/components/Mensagem";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useApolloClient } from "@apollo/client";
+import { ScrollView as RNScrollView } from "react-native";
+import tw from "twrnc";
+interface VisaoUsuarioProps {}
 
-const Teste = () => {
-  const { data: meData, loading: fetching } = useMeQuery({ skip: isServer() });
-  const [criarQuestionario] = useCriarPerguntaMutation();
+export const VisaoUsuario: React.FC<VisaoUsuarioProps> = ({}) => {
   const [questions, setQuestions] = useState<Resposta[]>([]);
-  const [perguntaIndex, setIndex] = useState(0);
   const { data: questionarioData, loading } = useQuestionarioQuery({
     notifyOnNetworkStatusChange: true,
   });
   const [responderPergunta] = useResponderPerguntaMutation();
   const apollo = useApolloClient();
+  const scrollViewRef = useRef<RNScrollView | null>(null);
+
   useEffect(() => {
     if (questionarioData?.questionario) {
-      setQuestions(questionarioData.questionario.respostas as Resposta[]);
+      if (!questionarioData.questionario.respostas) return undefined;
+
+      const perguntasRespondidas =
+        questionarioData.questionario.respostas.filter(
+          (resposta) => resposta.respondido
+        );
+
+      const primeiraNaoRespondida =
+        questionarioData.questionario.respostas.find(
+          (resposta) => !resposta.respondido
+        );
+
+      const perguntasCombinadas = primeiraNaoRespondida
+        ? [...perguntasRespondidas, primeiraNaoRespondida]
+        : perguntasRespondidas;
+
+      setQuestions(perguntasCombinadas as Resposta[]);
     }
   }, [questionarioData]);
 
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, [questions]);
+
   return (
-    <KeyboardWrapper>
-      <ScrollView
-        style={tw`h-full w-full bg-white rounded-xl shadow-md p-2 web:m-auto`}
-        contentContainerStyle={tw`flex-grow-1`}
-      >
-        <CustomButton
-          title="Criar Q"
-          onPress={criarQuestionario}
-          style={tw`absolute right-0 bottom-0 mb-4 mr-4`}
-        />
-        <CustomButton
-          title="Logout"
-          onPress={() => {
-            console.log("Logout");
-          }}
-          style={tw`absolute left-0 bottom-0 mb-4 ml-4`}
-        />
-
-        <ThemedView
-          style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center`}
+    <>
+      {questions.length > 0 ? (
+        <ScrollView
+          style={tw`h-full w-full bg-white rounded-xl shadow-md p-2 mt-2 web:m-auto z-1`}
+          contentContainerStyle={tw`flex-grow-1`}
+          // onContentSizeChange={onContentSizeChange}
+          ref={scrollViewRef}
         >
-          {fetching ? (
-            <ThemedText type="subtitle" style={tw`text-black ml-7 text-2xl`}>
-              Loading
-            </ThemedText>
-          ) : meData?.me ? (
-            <ThemedText type="subtitle" style={tw`text-black ml-7 text-xl`}>
-              Olá, {meData.me.username}!
-            </ThemedText>
-          ) : (
-            <ThemedText type="subtitle" style={tw`text-black ml-7 text-2xl`}>
-              No User
-            </ThemedText>
-          )}
-          <Image
-            source={require("@/assets/images/AppIcon.png")}
-            style={tw`mr-7 w-[56px] h-[56px]`}
-          />
-        </ThemedView>
-
-        {questions.length > 0 ? (
           <Formik
             initialValues={questions}
             enableReinitialize
             onSubmit={async (values) => {
-              // console.log("Values:", JSON.stringify(values, null, 2));
               for (const value of values) {
                 if (value.respondido) {
-                  console.log("Answered Value:", value);
+                  // console.log("Answered Value:", value);
                   continue;
                 }
-
-                const op =
-                  value.opcao_resposta_escolhida?.map((opcao) => ({
-                    id: opcao.id,
-                    text: opcao.text,
-                  })) || [];
-
+                let op;
+                if (value.opcao_resposta_escolhida) {
+                  op =
+                    value.opcao_resposta_escolhida.map((opcao) => ({
+                      id: opcao.id,
+                      text: opcao.text,
+                    })) || [];
+                }
                 console.log(op);
 
                 const response = await responderPergunta({
@@ -118,37 +105,38 @@ const Teste = () => {
             }}
           >
             {({ values, setFieldValue, handleSubmit }) => (
-              <>
-                {values.map((conjunto, index) =>
-                  conjunto.respondido ? (
-                    <ThemedView
-                      key={`${conjunto.id}-answered`}
-                      style={tw`mt-9 bg-white`}
-                    >
-                      <Mensagem
-                        key={`${conjunto.pergunta_id}-question`}
-                        keyNumber={conjunto.pergunta_id}
-                        content={conjunto.pergunta}
-                        isQuestion={true}
-                      />
-                      <Mensagem
-                        key={`${conjunto.id}-answer`}
-                        keyNumber={conjunto.id}
-                        content={
-                          conjunto.tipo === "resposta livre"
-                            ? conjunto.resposta_livre || ""
-                            : conjunto.opcao_resposta_escolhida
-                                ?.map((op) => op.text)
-                                .join(", ") || ""
-                        }
-                        isQuestion={false}
-                      />
-                    </ThemedView>
-                  ) : (
-                    index === perguntaIndex && (
+              <KeyboardWrapper>
+                {
+                  values.map((conjunto, index) =>
+                    conjunto.respondido ? (
+                      <ThemedView
+                        key={`${conjunto.id}-answered`}
+                        style={tw`my-1 bg-white`}
+                      >
+                        <Mensagem
+                          key={`${conjunto.pergunta_id}-question`}
+                          keyNumber={conjunto.pergunta_id}
+                          content={conjunto.pergunta}
+                          isQuestion={true}
+                        />
+                        <Mensagem
+                          key={`${conjunto.id}-answer`}
+                          keyNumber={conjunto.id}
+                          content={
+                            conjunto.tipo === "resposta livre"
+                              ? conjunto.resposta_livre || ""
+                              : conjunto.opcao_resposta_escolhida
+                                  ?.map((op) => op.text)
+                                  .join(", ") || ""
+                          }
+                          isQuestion={false}
+                        />
+                      </ThemedView>
+                    ) : (
+                      // index === perguntaIndex && (
                       <ThemedView
                         key={`${conjunto.id}-input`}
-                        style={tw`mt-9 bg-white`}
+                        style={tw`my-1 mb-[90%] bg-white`}
                       >
                         <ThemedView style={tw`mb-2 bg-white`}>
                           <Mensagem
@@ -195,18 +183,22 @@ const Teste = () => {
                       </ThemedView>
                     )
                   )
-                )}
-              </>
+                  // )
+                }
+                <View
+                  style={tw`${
+                    questionarioData?.questionario?.respondido ? "mb-10" : ""
+                  }`}
+                ></View>
+              </KeyboardWrapper>
             )}
           </Formik>
-        ) : (
-          <ThemedText style={tw`mt-5 text-center text-gray-500`}>
-            Loading questions...
-          </ThemedText>
-        )}
-      </ScrollView>
-    </KeyboardWrapper>
+        </ScrollView>
+      ) : (
+        <ThemedText style={tw`mt-5 text-center text-gray-500`}>
+          Loading questions...
+        </ThemedText>
+      )}
+    </>
   );
 };
-
-export default Teste;
