@@ -1,0 +1,6 @@
+mutation adicionarPaciente($userkey: String!) {
+  adicionarPaciente(userKey: $userkey) {
+    sucesso
+    erro
+  }
+}

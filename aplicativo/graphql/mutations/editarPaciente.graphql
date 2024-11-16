@@ -1,0 +1,19 @@
+mutation editarPaciente(
+  $userId: Int!
+  $paciente_ativo: Boolean!
+  $topicos: [String!]
+) {
+  editarPaciente(
+    userId: $userId
+    paciente_ativo: $paciente_ativo
+    topicos: $topicos
+  ) {
+    id
+    username
+    email
+    paciente_ativo
+    topicosPaciente
+    tipo
+    genero
+  }
+}

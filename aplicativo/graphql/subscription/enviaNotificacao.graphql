@@ -1,0 +1,12 @@
+subscription enviaNotificacao {
+  enviaNotificacao {
+    sound
+    title
+    body
+    data {
+      key
+      value
+    }
+    userIds
+  }
+}
