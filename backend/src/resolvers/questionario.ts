@@ -223,6 +223,93 @@ export class QuestionarioResolver {
     return questionarios;
   }
 
+  @Mutation(() => [Questionario])
+  async criarQuestionarioServidor(
+    pubSub: Publisher<Questionario>
+  ): Promise<Questionario[]> {
+    const perguntasResolver = new PerguntaResolver();
+    const pacientes = await new UserResolver().pacientes();
+    let questionarios: Questionario[] = [];
+
+    const quantidadePerguntasPorTopico = 4;
+
+    for (const paciente of pacientes) {
+      if (!paciente.paciente_ativo) continue;
+
+      const perguntasDoPaciente = await perguntasResolver.perguntasJob(
+        paciente.topicosPaciente
+      );
+
+      if (perguntasDoPaciente.length === 0) continue;
+      const perguntasByTopico: Record<string, Pergunta[]> = {};
+
+      for (const pergunta of perguntasDoPaciente) {
+        if (!perguntasByTopico[pergunta.topico]) {
+          perguntasByTopico[pergunta.topico] = [];
+        }
+        perguntasByTopico[pergunta.topico].push(pergunta);
+      }
+      const perguntasSelecionadas: Pergunta[] = [];
+
+      for (const topico in perguntasByTopico) {
+        const perguntas = perguntasByTopico[topico];
+        const shuffledPerguntas = perguntas.sort(() => 0.5 - Math.random());
+        const quantidade = Math.min(
+          quantidadePerguntasPorTopico,
+          shuffledPerguntas.length
+        );
+        const selected = shuffledPerguntas.slice(0, quantidade);
+
+        perguntasSelecionadas.push(...selected);
+      }
+
+      const quesitonario_ = await Questionario.create({
+        usuarioId: paciente.id,
+      }).save();
+
+      let perguntasIds: number[] = [];
+
+      for (const pergunta of perguntasSelecionadas) {
+        const op = await Promise.all(
+          pergunta.opcoes_respostas.map(async (opcao) => {
+            return {
+              id: opcao.id,
+              text: opcao.text,
+            };
+          })
+        );
+
+        const result = await getConnection()
+          .createQueryBuilder()
+          .insert()
+          .into(Resposta)
+          .values({
+            questionario: quesitonario_,
+            pergunta: pergunta.pergunta,
+            tipo: pergunta.tipo,
+            pergunta_id: pergunta.id,
+            opcao_resposta: [...op],
+          })
+          .returning("*")
+          .execute();
+
+        perguntasIds.push(result.raw[0].id);
+      }
+
+      const questionario = await Questionario.findOneOrFail({
+        where: {
+          id: quesitonario_.id,
+        },
+        relations: ["respostas"],
+      });
+
+      await pubSub(questionario);
+      questionarios.push(questionario);
+    }
+
+    return questionarios;
+  }
+
   @Mutation(() => [QuestionarioOutput])
   async enviarRelatorios() {
     const data = new Date();

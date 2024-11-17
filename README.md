@@ -28,13 +28,19 @@ Certifique-se de ter as ferramentas abaixo instaladas no seu ambiente:
 
 ---
 
-### Backend
-
-#### 1. Clone o repositório:
+### Clone o repositório:
 
 ```bash
 git clone <URL_DO_REPOSITORIO>
 cd <PASTA_DO_REPOSITORIO>
+```
+
+### Backend
+
+#### 1. Entre na pasta do servidor:
+
+```bash
+cd backend
 ```
 
 #### 2. Instale as dependências:
@@ -63,6 +69,16 @@ TYPEORM_PORT=5432
 yarn dev
 ```
 
+#### 5 (opcional). Nodemon:
+
+Caso queira realizar alguma mudança no código, você precisarar rodar o compilador do typescript.
+Para facilitar no desenvolvimento, há um comando pronto para rodar nodemon, que irá verificar se há mudanças no código e compilar automaticamente se houver.
+Basta executar:
+
+```bash
+yarn watch
+```
+
 O backend estará acessível em http://localhost:4000.
 
 ---
@@ -81,10 +97,10 @@ cd frontend
 yarn install
 ```
 
-#### 4. Inicie o aplicativo:
+#### 3. Inicie o aplicativo:
 
 ```bash
-yarn install
+yarn start
 ```
 
 O aplicativo estará acessível no Expo Go ou em http://localhost:8081.

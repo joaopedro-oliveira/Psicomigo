@@ -28,55 +28,46 @@ export default function Perguntas() {
   if (fetching) return null;
 
   return (
-    <ThemedView style={tw`h-full w-full bg-white`}>
-      <ThemedView
-        style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center`}
-      >
-        <>
-          {meFetching ? (
+    <ThemedView style={tw`h-full w-full bg-white p-2`}>
+      <ThemedView style={tw`mt-16 bg-white w-full h-[60px] flex-row  `}>
+        {fetching ? (
+          <ThemedText type="subtitle" style={tw`text-black ml-7 text-2xl`}>
+            Loading
+          </ThemedText>
+        ) : meData?.me ? (
+          <ThemedView
+            style={tw`flex-row bg-transparent items-center text-center`}
+          >
             <ThemedText
-              type="subtitle"
-              style={tw`text-black ml-7 mr-auto text-2xl`}
+              style={[
+                tw`text-black text-lg align-middle ml-5 mr-2 text-center `,
+                {
+                  fontFamily: "PoppinsSemiBold",
+                },
+              ]}
             >
-              Loading
+              {meData.me.username}
             </ThemedText>
-          ) : !meData?.me ? (
-            <ThemedText
-              type="subtitle"
-              style={tw`text-black ml-7 mr-auto text-2xl`}
+            <CustomButton
+              style={tw`bg-transparent  p-0 m-0 `}
+              onPress={async () => {
+                await logout();
+                await apollo.resetStore();
+              }}
             >
-              No User
-            </ThemedText>
-          ) : (
-            <ThemedView
-              style={tw`flex-row bg-transparent items-center text-center`}
-            >
-              <ThemedText
-                type="subtitle"
-                style={tw`text-gray-400 ml-7 mr-auto text-xl`}
-              >
-                {meData.me.username.charAt(0).toUpperCase() +
-                  meData.me.username.slice(1).toLowerCase() +
-                  ""}
+              <ThemedText type="link" style={tw`text-center text-base`}>
+                Sair
               </ThemedText>
-              <CustomButton
-                style={tw`bg-transparent  p-0 m-0 `}
-                onPress={async () => {
-                  logout();
-                  await apollo.resetStore();
-                }}
-              >
-                <ThemedText type="link" style={tw`text-center text-base`}>
-                  Sair
-                </ThemedText>
-              </CustomButton>
-            </ThemedView>
-          )}
-        </>
-
+            </CustomButton>
+          </ThemedView>
+        ) : (
+          <ThemedText type="subtitle" style={tw`text-black ml-7 text-2xl`}>
+            No User
+          </ThemedText>
+        )}
         <Image
           source={require("@/assets/images/AppIcon.png")}
-          style={tw`mr-7 w-[56px] h-[56px]`}
+          style={tw`mr-7 ml-auto w-[56px] h-[56px]`}
         />
       </ThemedView>
       <SafeAreaView
@@ -107,7 +98,7 @@ export default function Perguntas() {
       </SafeAreaView>
       <FlatList
         data={data?.perguntas}
-        style={tw`flex-col mx-[10%] ios:mx-[5%] ios:w-[90%] my-auto `}
+        style={tw`flex-col  mx-[10%] ios:mx-[2.5%] ios:w-[95%] my-auto `}
         renderItem={({ item, index }) => {
           return <PerguntaComponent pergunta={item} />;
         }}

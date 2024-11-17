@@ -32,14 +32,14 @@ export default function RootLayout() {
     })
   );
 
-  const delayLink = new ApolloLink((operation, forward) => {
-    return new Observable((observer) => {
-      const delay = 3000; // 3-second delay
-      setTimeout(() => {
-        forward(operation).subscribe(observer);
-      }, delay);
-    });
-  });
+  // const delayLink = new ApolloLink((operation, forward) => {
+  //   return new Observable((observer) => {
+  //     const delay = 3000; // 3-second delay
+  //     setTimeout(() => {
+  //       forward(operation).subscribe(observer);
+  //     }, delay);
+  //   });
+  // });
 
   const httpLink = new HttpLink({
     uri:

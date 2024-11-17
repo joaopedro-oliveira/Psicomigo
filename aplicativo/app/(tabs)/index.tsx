@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Image } from "react-native";
+import { Image, Touchable } from "react-native";
 import tw from "twrnc";
 import {
   useMeQuery,
@@ -18,6 +18,8 @@ import { Text } from "native-base";
 import { LoadingSkeletonMedico } from "@/components/LoadingSkeletonMedico";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { LoadingSkeletonPaciente } from "@/components/LoadingSkeletonPaciente";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   useIsAuth();
@@ -40,6 +42,15 @@ const HomeScreen = () => {
 
   return (
     <ThemedView style={tw`h-full w-full bg-white shadow-md p-2 web:m-auto`}>
+      <TouchableOpacity
+        style={tw`absolute w-7 h-7 items-center  bg-black`}
+        onPress={() => {
+          criarQuestionario();
+        }}
+      >
+        <Ionicons name="add" size={24} color="white" />
+      </TouchableOpacity>
+
       <ThemedView
         style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center`}
       >
@@ -64,7 +75,7 @@ const HomeScreen = () => {
             <CustomButton
               style={tw`bg-transparent  p-0 m-0 `}
               onPress={async () => {
-                logout();
+                await logout();
                 await apollo.resetStore();
               }}
             >

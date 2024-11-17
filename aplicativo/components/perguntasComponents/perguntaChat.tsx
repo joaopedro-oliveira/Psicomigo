@@ -33,7 +33,7 @@ const PerguntaComponent: React.FC<PerguntaProps> = ({ pergunta }) => {
   };
 
   return (
-    <View style={tw`p-4 bg-white rounded-lg shadow flex`}>
+    <View style={tw`p-4 bg-white flex`}>
       <View style={tw`flex-row  `}>
         <View style={tw`flex max-w-[90%] web:max-w-[100%] `}>
           <Link

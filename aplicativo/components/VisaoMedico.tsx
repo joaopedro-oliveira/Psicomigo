@@ -61,7 +61,6 @@ export const VisaoMedico: React.FC<VisaoMedicoProps> = ({}) => {
               setFieldValue,
               handleChange,
               errors,
-              touched,
             }) => (
               <>
                 {showCamera && permission?.granted && (
@@ -134,7 +133,7 @@ export const VisaoMedico: React.FC<VisaoMedicoProps> = ({}) => {
         </ThemedView>
 
         <FlatList
-          style={tw`flex-grow max-h-[78%] mx-[10%] mt-4 ios:mx-[5%] ios:w-[90%] -z-20 bg-white`}
+          style={tw`flex-grow max-h-[78%] mx-[10%] mt-8 ios:mx-[5%] ios:w-[90%] -z-20 bg-white`}
           data={doutor?.pacientesDoutor}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (

@@ -25,6 +25,7 @@ import { Server as WebSocketServer } from "ws";
 import { __prod__, COOKIE_NAME } from "./constants/constants";
 import { NotificationResolver } from "./resolvers/notification";
 import RedisIoRedis from "ioredis";
+import cron from "node-cron";
 
 const pubsub = new RedisPubSub({
   publisher: new RedisIoRedis(process.env.REDIS_URL, {
@@ -62,10 +63,10 @@ const main = async () => {
   // __prod__ ? await conn.runMigrations() : null;
 
   const app = express();
+  app.set("proxy", 1);
   const httpServer = http.createServer(app);
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
-  app.set("proxy", 1);
   app.use(
     cors(
       __prod__
@@ -113,7 +114,9 @@ const main = async () => {
     playground: true,
     context: ({ req, res }) => ({ req, res, redis }),
   });
+
   await apolloServer.start();
+
   apolloServer.applyMiddleware({
     app: app as any,
     cors: false,
@@ -141,6 +144,102 @@ const main = async () => {
     console.log(
       `Assinaturas prontas em ws://localhost:4000${apolloServer.subscriptionsPath}`
     );
+  });
+
+  // Explicação da função cron
+  // Primeiro numero é o minuto
+  // Segundo numero é a hora
+  // Terceiro numero é o dia do mês, caso for * pode ser qualquer dia do mês
+  // Quarto numero é o mês, caso for * todo mês
+  // Quinto numero é o dia da semana, que pode ser um range, exemplo 1-5 para segunda a sexta
+
+  const timeString = !__prod__ ? "0 * * * *" : "0 0 * * 1-5";
+
+  // Chamada diaria, todo dia as 00:00 para criar um questionário, caso for produção
+
+  cron.schedule(timeString, async () => {
+    console.log(
+      "Criando questionarios diarios.. Data: ",
+
+      new Date().toLocaleTimeString()
+    );
+    try {
+      const q = new QuestionarioResolver();
+      await q.criarQuestionarioServidor((payload) =>
+        //  console.log(payload)
+        pubsub.publish("NOVO_QUESTIONARIO", payload)
+      );
+      // console.log("Daily task completed:", questionarios);
+    } catch (error) {
+      console.error("Error executing daily task:", error);
+    }
+  });
+  // // TESTE, COMENTAR DEPOIS POR FAVOR
+  // cron.schedule("*/10 * * * *", async () => {
+  //   console.log("Enviando lembretes a cada 15 min para teste");
+  //   try {
+  //     const n = new NotificationResolver();
+
+  //     await n.enviarLembretes((payload) =>
+  //       pubsub.publish("NOVA_NOTIFICACAO", payload)
+  //     );
+  //     // console.log("Daily task completed:", questionarios);
+  //   } catch (error) {
+  //     console.error("Error executing daily task:", error);
+  //   }
+  // });
+
+  cron.schedule("0 12 * * *", async () => {
+    console.log("Enviando lembretes das 12 horas");
+    try {
+      const n = new NotificationResolver();
+
+      await n.enviarLembretes((payload) =>
+        pubsub.publish("NOVA_NOTIFICACAO", payload)
+      );
+      // console.log("Daily task completed:", questionarios);
+    } catch (error) {
+      console.error("Error executing daily task:", error);
+    }
+  });
+
+  cron.schedule("0 15 * * *", async () => {
+    console.log("Enviando lembrestes das 15 horas");
+    try {
+      const n = new NotificationResolver();
+
+      await n.enviarLembretes((payload) =>
+        pubsub.publish("NOVA_NOTIFICACAO", payload)
+      );
+      // console.log("Daily task completed:", questionarios);
+    } catch (error) {
+      console.error("Error executing daily task:", error);
+    }
+  });
+
+  cron.schedule("0 20 * * *", async () => {
+    console.log("Enviando lembretes das 12 horas");
+    try {
+      const n = new NotificationResolver();
+
+      await n.enviarLembretes((payload) =>
+        pubsub.publish("NOVA_NOTIFICACAO", payload)
+      );
+      // console.log("Daily task completed:", questionarios);
+    } catch (error) {
+      console.error("Error executing daily task:", error);
+    }
+  });
+
+  // Chamada semanal, todo sabado as 07:00 para enviar o relatório dos questionários.
+  cron.schedule("0 7 * * 6", async () => {
+    console.log(
+      "Enviando relatório semanal.. Data: ",
+      new Date().toLocaleDateString()
+    );
+
+    const q = new QuestionarioResolver();
+    await q.enviarRelatorios();
   });
 };
 

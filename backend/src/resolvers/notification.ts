@@ -51,9 +51,7 @@ export class NotificationResolver {
   }
 
   @Mutation(() => Boolean)
-  async enviarLembretes(
-    @PubSub("NOVA_NOTIFICACAO") pubSub: Publisher<Notificacao>
-  ): Promise<boolean> {
+  async enviarLembretes(pubSub: Publisher<Notificacao>): Promise<boolean> {
     const data = new Date();
     data.setHours(data.getHours() - 24);
     const questionarios = await Questionario.find({

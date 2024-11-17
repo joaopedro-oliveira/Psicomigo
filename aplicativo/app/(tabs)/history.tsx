@@ -1,28 +1,17 @@
-import { Image, StyleSheet, SafeAreaView } from "react-native";
+import { Image } from "react-native";
 import tw from "twrnc";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { Formik } from "formik";
 import {
   Questionario,
-  useLoginMutation,
   useMeQuery,
   useQuestionariosQuery,
 } from "@/generated/graphql";
-import { toErrorMap } from "@/utils/toErrorMap";
-import { ThemedTextInputField } from "@/components/ThemedTextInputField";
-import { KeyboardWrapper } from "@/components/KeyboardWrapper";
 import { isServer } from "@/utils/isServer";
 import { useEffect, useState } from "react";
-import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
+import { Calendar, DateData } from "react-native-calendars";
 import Mensagem from "@/components/Mensagem";
 import { ScrollView } from "native-base";
-import {
-  GestureHandlerRootView,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "@/components/CustomButtton";
 
 const History = () => {
@@ -110,9 +99,7 @@ const History = () => {
     <ThemedView
       style={tw`h-full w-full bg-white rounded-xl shadow-md p-2 web:m-auto`}
     >
-      <ThemedView
-        style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center`}
-      >
+      <ThemedView style={tw`mt-16 bg-white w-full h-[60px] flex-row `}>
         {fetching ? (
           <ThemedText type="subtitle" style={tw`text-black ml-7 text-2xl`}>
             Loading
