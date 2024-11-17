@@ -1,50 +1,94 @@
-# Welcome to your Expo app 👋
+# Psicomigo - Aplicativo voltado para Saúde Mental 🧠
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Psicomigo** é um aplicativo de saúde mental projetado para apoiar pacientes e psicólogos. Ele permite que psicólogos enviem perguntas personalizadas diariamente aos pacientes, de acordo com seus casos, e fornece ferramentas para monitoramento e comunicação.
 
-## Get started
+O aplicativo também oferece informações sobre saúde mental e contatos de emergência, além de gerar relatórios semanais para psicólogos com base nas respostas dos pacientes.
 
-1. Install dependencies
+**Esse aplicativo foi feito com o intuito de me aprofundar na concepção e criação de um aplicativo, ele não é um produto real postado nas stores.**
 
-   ```bash
-   npm install
-   ```
+## Funcionalidades Principais 🌟
 
-2. Start the app
+- **Questionários Diários:** Perguntas personalizadas enviadas aos pacientes.
+- **Respostas Dinâmicas:** Interface amigável para responder às perguntas.
+- **Relatórios Semanais:** Geração automática de relatórios para psicólogos.
+- **Informações Educativas:** Informações sobre saúde mental e contatos de emergência.
+- **Gerenciamento Backend Robusto:** Uso de Redis, GraphQL, Apollo Server e TypeORM.
 
-   ```bash
-    npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## Configuração do Ambiente de Desenvolvimento 🛠️
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Pré-requisitos
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Certifique-se de ter as ferramentas abaixo instaladas no seu ambiente:
 
-## Get a fresh project
+- **Node.js:** Recomendado a versão LTS.
+- **Yarn:** Para gerenciar dependências.
+- **Redis:** Para gerenciamento de sessões e assinaturas.
 
-When you're ready, run:
+---
+
+### Backend
+
+#### 1. Clone o repositório:
 
 ```bash
-npm run reset-project
+git clone <URL_DO_REPOSITORIO>
+cd <PASTA_DO_REPOSITORIO>
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+#### 2. Instale as dependências:
 
-## Learn more
+```bash
+yarn install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+#### 3. Configure o banco de dados (servidor):
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Certifique-se de que um banco de dados Redis esteja em execução. Em seguida, configure as variáveis de ambiente no arquivo .env:
 
-## Join the community
+```bash
+REDIS_URL=redis://localhost:6379
+TYPEORM_CONNECTION=postgres
+TYPEORM_HOST=localhost
+TYPEORM_USERNAME=seu_usuario
+TYPEORM_PASSWORD=sua_senha
+TYPEORM_DATABASE=sua_base
+TYPEORM_PORT=5432
+```
 
-Join our community of developers creating universal apps.
+#### 4. Inicie o servidor:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+yarn dev
+```
+
+O backend estará acessível em http://localhost:4000.
+
+---
+
+### Frontend
+
+#### 1. Acesse o diretório do front-end:
+
+```bash
+cd frontend
+```
+
+#### 2. Instale as dependências:
+
+```bash
+yarn install
+```
+
+#### 4. Inicie o aplicativo:
+
+```bash
+yarn install
+```
+
+O aplicativo estará acessível no Expo Go ou em http://localhost:8081.
+
+---
+
+Email: joaopedro_ymcmb@hotmail.com

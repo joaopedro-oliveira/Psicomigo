@@ -1,0 +1,12 @@
+query getUser($userId: Int!) {
+  user(userId: $userId) {
+    id
+    username
+    email
+    dataNascimento
+    paciente_ativo
+    topicosPaciente
+    tipo
+    genero
+  }
+}

@@ -1,0 +1,6 @@
+query medico {
+  medico {
+    id
+    username
+  }
+}
