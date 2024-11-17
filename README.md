@@ -31,8 +31,7 @@ Certifique-se de ter as ferramentas abaixo instaladas no seu ambiente:
 ### Clone o repositório:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
-cd <PASTA_DO_REPOSITORIO>
+git https://github.com/joaopedro-oliveira/Psicomigo.git
 ```
 
 ### Backend
