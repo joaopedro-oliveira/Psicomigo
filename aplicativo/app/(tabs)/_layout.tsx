@@ -124,6 +124,18 @@ export default function TabLayout() {
               tabBarIcon: () => null,
             }}
           />
+          <Tabs.Screen
+            name="info"
+            options={{
+              tabBarLabel: () => null,
+              tabBarIcon: ({ color, focused }) => (
+                <TabBarIcon
+                  name={focused ? "heart" : "heart-outline"}
+                  color={color}
+                />
+              ),
+            }}
+          />
         </Tabs>
       )}
     </NativeBaseProvider>

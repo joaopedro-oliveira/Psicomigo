@@ -23,6 +23,7 @@ import { persistCache } from "apollo3-cache-persist";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SkeletonLoader from "@/components/SkeletonLoader";
+import { LogBox } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -162,6 +163,15 @@ export default function RootLayout() {
       </NativeBaseProvider>
     );
   }
+
+  // Ignore specific warnings
+  LogBox.ignoreLogs([
+    "Warning: ...", // Replace with the actual warning text you want to ignore
+    'Warning: Each child in a list should have a unique "key" prop.',
+  ]);
+
+  // Ignore all logs (not recommended for development)
+  LogBox.ignoreAllLogs();
 
   return (
     // <NavigationContainer>

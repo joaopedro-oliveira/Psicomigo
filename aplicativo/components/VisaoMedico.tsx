@@ -166,9 +166,7 @@ export const VisaoMedico: React.FC<VisaoMedicoProps> = ({}) => {
                       });
                     }}
                   >
-                    {item.paciente_ativo && (
-                      <Ionicons name="pencil" size={14} color="white" />
-                    )}
+                    {<Ionicons name="pencil" size={14} color="white" />}
                   </TouchableOpacity>
                 </ThemedView>
                 <Text style={{ fontFamily: "PoppinsRegular" }}>

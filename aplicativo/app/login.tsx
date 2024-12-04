@@ -18,7 +18,7 @@ const Login = () => {
   const next = params.next;
 
   return (
-    <KeyboardWrapper>
+    <ThemedView>
       <ScrollView
         style={tw`h-full w-full bg-white  rounded-xl shadow-md p-2 `}
         contentContainerStyle={tw`flex-grow-1`}
@@ -79,26 +79,30 @@ const Login = () => {
           >
             {({ handleSubmit }) => (
               <>
-                <SafeAreaView
-                  style={tw`mt-8 flex justify-center w-[75%] mx-auto`}
-                >
-                  <ThemedText style={tw` text-black text-4 `}>Email</ThemedText>
-                  <ThemedTextInputField
-                    style={tw`w-full  h-12 border p-2.5  mt-1 border-gray-400 rounded-xl bg-[#fafafa]`}
-                    name="usernameOrEmail"
-                    placeholder="Ex: john.doe@email.com"
-                    _mask={false}
-                  />
+                <KeyboardWrapper style={tw`m-0 p-0`}>
+                  <SafeAreaView
+                    style={tw`mt-8 flex justify-center w-[75%] mx-auto`}
+                  >
+                    <ThemedText style={tw` text-black text-4 `}>
+                      Email
+                    </ThemedText>
+                    <ThemedTextInputField
+                      style={tw`w-full  h-12 border p-2.5  mt-1 border-gray-400 rounded-xl bg-[#fafafa]`}
+                      name="usernameOrEmail"
+                      placeholder="Ex: john.doe@email.com"
+                      _mask={false}
+                    />
 
-                  <ThemedText style={tw`mt-4 text-black `}>Senha</ThemedText>
-                  <ThemedTextInputField
-                    style={tw`w-full h-12 border p-2.5  mt-1 border-gray-400 rounded-xl bg-[#fafafa]`}
-                    name="password"
-                    placeholder="*********"
-                    secureTextEntry={true}
-                    _mask={false}
-                  />
-                </SafeAreaView>
+                    <ThemedText style={tw`mt-4 text-black `}>Senha</ThemedText>
+                    <ThemedTextInputField
+                      style={tw`w-full h-12 border p-2.5  mt-1 border-gray-400 rounded-xl bg-[#fafafa]`}
+                      name="password"
+                      placeholder="*********"
+                      secureTextEntry={true}
+                      _mask={false}
+                    />
+                  </SafeAreaView>
+                </KeyboardWrapper>
 
                 <CustomButton
                   onPress={handleSubmit}
@@ -134,7 +138,7 @@ const Login = () => {
           </SafeAreaView>
         </ThemedView>
       </ScrollView>
-    </KeyboardWrapper>
+    </ThemedView>
   );
 };
 
