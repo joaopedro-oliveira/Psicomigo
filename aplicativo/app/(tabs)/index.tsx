@@ -42,14 +42,14 @@ const HomeScreen = () => {
 
   return (
     <ThemedView style={tw`h-full w-full bg-white shadow-md p-2 web:m-auto`}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={tw`absolute w-7 h-7 items-center  bg-black`}
         onPress={() => {
           criarQuestionario();
         }}
       >
         <Ionicons name="add" size={24} color="white" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <ThemedView
         style={tw`mt-16 bg-white w-full h-[60px] flex-row items-center`}

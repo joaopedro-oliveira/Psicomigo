@@ -1,6 +1,7 @@
 import {
   DarkTheme,
   DefaultTheme,
+  NavigationContainer,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -26,39 +27,39 @@ import SkeletonLoader from "@/components/SkeletonLoader";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const wsLink = new GraphQLWsLink(
-    createClient({
-      url: process.env.EXPO_PUBLIC_DEV_SUBSCRIPTION_URL as string,
-    })
-  );
+  // const wsLink = new GraphQLWsLink(
+  //   createClient({
+  //     url: process.env.EXPO_PUBLIC_DEV_SUBSCRIPTION_URL as string,
+  //   })
+  // );
 
-  // const delayLink = new ApolloLink((operation, forward) => {
-  //   return new Observable((observer) => {
-  //     const delay = 3000; // 3-second delay
-  //     setTimeout(() => {
-  //       forward(operation).subscribe(observer);
-  //     }, delay);
-  //   });
+  // // const delayLink = new ApolloLink((operation, forward) => {
+  // //   return new Observable((observer) => {
+  // //     const delay = 3000; // 3-second delay
+  // //     setTimeout(() => {
+  // //       forward(operation).subscribe(observer);
+  // //     }, delay);
+  // //   });
+  // // });
+
+  // const httpLink = new HttpLink({
+  //   uri:
+  //     Platform.OS === "web"
+  //       ? process.env.EXPO_PUBLIC_DEV_WEB_URL!
+  //       : process.env.EXPO_PUBLIC_DEV_DEVICE_URL!,
+  //   credentials: "include",
   // });
 
   const httpLink = new HttpLink({
-    uri:
-      Platform.OS === "web"
-        ? process.env.EXPO_PUBLIC_DEV_WEB_URL!
-        : process.env.EXPO_PUBLIC_DEV_DEVICE_URL!,
-    credentials: "include",
+    uri: process.env.EXPO_PUBLIC_API_URL,
+    // credentials: "include",
   });
 
-  // const httpLink = new HttpLink({
-  //   uri: process.env.EXPO_PUBLIC_API_URL,
-  //   // credentials: "include",
-  // });
-
-  // const wsLink = new GraphQLWsLink(
-  //   createClient({
-  //     url: process.env.EXPO_PUBLIC_API_SUBSCRIPTION_URL as string,
-  //   })
-  // );
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: process.env.EXPO_PUBLIC_API_SUBSCRIPTION_URL as string,
+    })
+  );
 
   const splitLink = split(
     ({ query }) => {
@@ -163,6 +164,7 @@ export default function RootLayout() {
   }
 
   return (
+    // <NavigationContainer>
     <NativeBaseProvider>
       <ApolloProvider client={client}>
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -183,5 +185,6 @@ export default function RootLayout() {
         </GestureHandlerRootView>
       </ApolloProvider>
     </NativeBaseProvider>
+    // </NavigationContainer>
   );
 }

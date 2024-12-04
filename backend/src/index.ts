@@ -59,7 +59,7 @@ const main = async () => {
   });
 
   await conn.showMigrations();
-  await conn.runMigrations();
+  // await conn.runMigrations();
   // __prod__ ? await conn.runMigrations() : null;
 
   const app = express();

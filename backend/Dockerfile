@@ -13,7 +13,7 @@ COPY .env.production .env
 RUN yarn build
 
 ENV NODE_ENV production
-#COPY --chown=node:node . .
+COPY --chown=node:node . .
 
 EXPOSE 8080
 CMD [ "node", "dist/index.js" ]

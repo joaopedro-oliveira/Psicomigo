@@ -83,4 +83,40 @@ export class NotificationResolver {
     await pubSub(notificacao);
     return true;
   }
+
+  @Mutation(() => Boolean)
+  async enviarLembretesDebug(
+    @PubSub("NOVA_NOTIFICACAO") pubSub: Publisher<Notificacao>
+  ): Promise<boolean> {
+    const data = new Date();
+    data.setHours(data.getHours() - 24);
+    const questionarios = await Questionario.find({
+      relations: ["respostas"],
+      where: {
+        createdAt: MoreThan(data),
+        respondido: false,
+      },
+      order: { createdAt: "DESC" },
+    });
+
+    const usersId: number[] = [];
+
+    for (const questionario of questionarios) {
+      await usersId.push(questionario.usuarioId);
+    }
+
+    const notificacao: Notificacao = {
+      sound: "default",
+      title: "Lembrete",
+      body: "Não se esqueça de responder as perguntinhas!",
+      data: {
+        key: "tarefa",
+        value: "index",
+      },
+      userIds: usersId,
+    };
+
+    await pubSub(notificacao);
+    return true;
+  }
 }
